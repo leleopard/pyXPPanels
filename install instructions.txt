@@ -1,0 +1,53 @@
+If using python3 replace pip by pip3
+
+1. Install python 3 and pygame - follow instructions here:
+OS X: http://kidscancode.org/blog/2015/09/pygame_install
+
+on linux:
+sudo apt-get install mercurial python3-pip libfreetype6-dev
+sudo apt-get build-dep python-pygame
+sudo pip3 install hg+http://bitbucket.org/pygame/pygame
+
+2. Install PyOpenGL: type in terminal
+sudo pip install PyOpenGL PyOpenGL_accelerate
+
+3. Install Numpy:
+sudo pip install numpy
+
+4. Install Pillow
+on linux to allow Pillow to compile install libjpeg first
+sudo apt-get install libjpeg-dev
+ 
+sudo pip install Pillow
+
+
+5. Install GLFW - MAC
+
+
+download from http://www.glfw.org
+to compile, follow the guide: http://www.glfw.org/docs/latest/compile.html
+ensure you build a shared library - by default this compiles as a static library which does not work
+feed the following option to cmake:
+cmake -D BUILD_SHARED_LIBS=ON .
+make
+sudo make install
+
+5. Install GLFW - LINUX
+download glfw from http://www.glfw.org
+install cmake: sudo apt-get install cmake
+install dependencies: sudo apt-get install xorg-dev
+sudo apt-get install libgl1-mesa-dev
+to compile, follow the guide: http://www.glfw.org/docs/latest/compile.html
+ensure you build a shared library - by default this compiles as a static library which does not work
+feed the following option to cmake:
+cmake -D BUILD_SHARED_LIBS=ON .
+make
+sudo make install
+sudo ldconfig	#to rebuild the library links
+
+
+Windows: 
+download the dll that corresponds to the python version you are running (e.g. if you are running python 32 bits download the 32 bits dll even if you are running windows 64)
+copy the dll in the windows folder corresponding to the dll version (C:\Windows\System32 for 64 bits, C:\Windows\SysWOW64 for 32 bits)
+I found that I had to use the dll corresponding to the visual studio version I had installed (VS 2010)
+

@@ -1,0 +1,10 @@
+301 sim/cockpit/radios/nav1_dme_dist_m
+302 sim/cockpit/radios/nav1_obs_degt
+303 sim/cockpit/misc/compass_indicated
+304 sim/cockpit/radios/nav1_freq_hz
+305 sim/cockpit/radios/nav_type
+306 sim/cockpit2/engine/indicators/engine_speed_rpm
+307 sim/cockpit2/gauges/indicators/turn_rate_roll_deg_pilot
+308 sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot
+309 sim/cockpit2/gauges/indicators/compass_heading_deg_mag
+310 sim/cockpit2/gauges/actuators/artificial_horizon_adjust_deg_pilot
