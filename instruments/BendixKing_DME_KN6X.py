@@ -87,6 +87,14 @@ class BK_DME_KN6X(graphics.Container):
 				self.DME_NAV1_Indicator.setVisible(False)
 				self.DME_NAV2_Indicator.setVisible(True)
 		else:
-			self.setVisible(False)
+			#self.setVisible(False)
+			self.DME_BGD.setVisible(False)
+			self.DME_NAV1_Indicator.setVisible(False)
+			self.DME_NAV2_Indicator.setVisible(False)
+			self.DME_DIST_Text.setVisible(False)
+			self.DME_SPEED_Text.setVisible(False)
+			self.DME_TIME_Text.setVisible(False)
+			
+			
 		super(BK_DME_KN6X,self).draw()
 

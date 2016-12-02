@@ -452,6 +452,7 @@ class ImagePanel(Panel):
 	visibilityXPdataSource = None
 	visibilityToggleFunction = None
 	
+	refreshVisibility = True
 	refreshPosition = True
 	refreshRotation = False
 	refreshTextTranslation = False
@@ -508,11 +509,14 @@ class ImagePanel(Panel):
 		self.image.needRefresh = True
 	
 	def setVisible(self,visible):
-		self.visible = visible
-		self.image.visible = visible
-		self.needRefresh = True
-		self.image.draw((self.x,self.y),self.width,self.height,None,self.rot_angle, self.rotationCenter, (self.text_xdev, self.text_ydev),self.text_rot_angle,self.text_zoom)
-		self.image.needRefresh = True
+		if self.visible != visible:
+			logging.debug("Visibility changed: "+str(visible))
+			self.refreshVisibility = True
+			self.visible = visible
+			self.image.visible = visible
+		#self.needRefresh = True
+		#self.image.draw((self.x,self.y),self.width,self.height,None,self.rot_angle, self.rotationCenter, (self.text_xdev, self.text_ydev),self.text_rot_angle,self.text_zoom)
+		#self.image.needRefresh = True
 	
 	def translateTexture(self, textXdev, textYdev):
 		self.text_xdev = textXdev
@@ -586,7 +590,7 @@ class ImagePanel(Panel):
 		self.valueToMoveTable = self.createFactorsTable(indValueToTranslationTable)
 		
 	def draw(self):
-		#print "update ", self.image_name
+		#logging.debug("update "+str(self.name))
 		#def draw(self, abspos=None, relpos=None, width=None, height=None,
 		#color=None, rotation=None, rotationCenter=None):
 		needRefresh = False
@@ -601,11 +605,12 @@ class ImagePanel(Panel):
 			self.visible = self.visibilityToggleFunction(XPindicatedValue,self.visibilityXPdataSource)
 			needRefresh = True
 			
-		if self.visible == False:
-			self.image.visible = False
-		else:
-			self.image.visible = True
-
+		if self.refreshVisibility == True:
+			logging.debug("draw: Visibility needs to be changed"+str(self.visible))
+			self.refreshVisibility = False 
+			self.image.visible = self.visible
+			needRefresh = True
+		
 		if self.rotating == True:
 			if self.testMode == False:
 				XPindicatedValue = self.rotationXPdataSource.getData(self.rotationXPdata[0],self.rotationXPdata[1])
@@ -715,6 +720,7 @@ class ImagePanel(Panel):
 		#if self.testMode == True:
 			#print "drawing ", self.name
 		if needRefresh == True:
+			logging.debug("I need to be refreshed")
 			self.image.needRefresh = True
 			self.image.draw((self.x+self.xdev,self.y+self.ydev),
 							self.width,self.height,None,

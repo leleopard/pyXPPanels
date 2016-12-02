@@ -66,7 +66,7 @@ class ArduinoSerial(threading.Thread):
 				data = self.serialConnection.read(bytesToRead)		
 				#print("Arduino data: ", data, "data length", len(data))
 				buffer += data
-				print("buffer: ", buffer)
+				#print("buffer: ", buffer)
 				
 				commands = buffer.split('\13\10')
 				for elem in commands:
@@ -80,17 +80,17 @@ class ArduinoSerial(threading.Thread):
 			
 	## 
 	def processArduinoCmd(self, buffer):
-		logging.debug("Processing arduino command, command id: "+buffer[0:4])
+		#logging.debug("Processing arduino command, command id: "+buffer[0:4])
 		if buffer [0:4] == 'CMND':
 			command = buffer[5:len(buffer)-1]
-			print("i see a command", command)
+			#print("i see a command", command)
 			
 			self.XPUDPServer.sendXPCmd(command)
 		
 		if buffer [0:4] == 'DREF':
 			dataref = buffer[5:len(buffer)-1]
 						
-			print("i see a dataref", dataref)
+			#print("i see a dataref", dataref)
 			
 			self.XPUDPServer.sendXPDref(dataref)
 	

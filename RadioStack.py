@@ -6,10 +6,12 @@ from lib.graphics import fonts
 
 
 def drawInstruments():
+	
 	batchImageRenderer.render()
 	NAVCOMM_BK165_1.draw()
 	NAVCOMM_BK165_2.draw()
 	DME_KN6X.draw()
+	
 
 #********************************************************************************************
 #
