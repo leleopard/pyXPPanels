@@ -863,13 +863,13 @@ class GL_Font:
     } """
 
 	def __init__(self,fontName,fontSize, fontColor = (255,255,255), antialias = True, fontKerning = 0):
-		logging.info('GL_Font_3 - initialising font %s ',fontName)
+		logging.debug('GL_Font_3 - initialising font %s ',fontName)
 		self.antialias = antialias
 		self.fontColor = fontColor
 		self.fontKerning = fontKerning
 		pygame.font.init()
 		if not pygame.font.get_init():
-			print ('Could not render font.')
+			logging.error ('Could not render font.')
 			return -1
 		fontPath = os.path.join(os.path.dirname(__file__), '../../',fontName)
 		self.font = pygame.font.Font(fontPath,fontSize)
@@ -896,7 +896,7 @@ class GL_Font:
 		
 		self.textWidth = self.charWidth*len(self.char)
 		
-		logging.info("Loaded all characters, texture height = %s, texture width = %s", self.textHeight, self.textWidth)
+		logging.debug("Loaded all characters, texture height = %s, texture width = %s", self.textHeight, self.textWidth)
 		# create a texture to hold all characters - we will fill it later
 		self.texture = gl.glGenTextures(1)
 		gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture)
