@@ -65,24 +65,28 @@ class BK_DME_KN6X(graphics.Container):
 		self.addItem(self.DME_NAV2_Indicator, (x_DME_txt+135,y_frequencies+20), False)
 		
 	def draw(self):
-		DME_found = self.XPlaneDataDispatcher.getData(102,2)
-		if DME_found == 0.0:
-			self.DME_DIST_Text.setVisible(False)
-			self.DME_SPEED_Text.setVisible(False)
-			self.DME_TIME_Text.setVisible(False)
-		else:
-			self.DME_DIST_Text.setVisible(True)
-			self.DME_SPEED_Text.setVisible(True)
-			self.DME_TIME_Text.setVisible(True)
-		
-		ACT_DME = self.XPlaneDataDispatcher.getData(102,0)
-		
-		if ACT_DME == 0.0:
-			self.DME_NAV1_Indicator.setVisible(True)
-			self.DME_NAV2_Indicator.setVisible(False)
-		else:
-			self.DME_NAV1_Indicator.setVisible(False)
-			self.DME_NAV2_Indicator.setVisible(True)
+		powered = self.XPlaneDataDispatcher.getData(312,0)
+		if powered ==1.0 :
+			self.setVisible(True)
+			DME_found = self.XPlaneDataDispatcher.getData(102,2)
+			if DME_found == 0.0:
+				self.DME_DIST_Text.setVisible(False)
+				self.DME_SPEED_Text.setVisible(False)
+				self.DME_TIME_Text.setVisible(False)
+			else:
+				self.DME_DIST_Text.setVisible(True)
+				self.DME_SPEED_Text.setVisible(True)
+				self.DME_TIME_Text.setVisible(True)
 			
+			ACT_DME = self.XPlaneDataDispatcher.getData(102,0)
+			
+			if ACT_DME == 0.0:
+				self.DME_NAV1_Indicator.setVisible(True)
+				self.DME_NAV2_Indicator.setVisible(False)
+			else:
+				self.DME_NAV1_Indicator.setVisible(False)
+				self.DME_NAV2_Indicator.setVisible(True)
+		else:
+			self.setVisible(False)
 		super(BK_DME_KN6X,self).draw()
 

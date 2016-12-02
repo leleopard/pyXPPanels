@@ -85,11 +85,13 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 			powered = self.XPlaneDataDispatcher.getData(311,0)
 		
 		if powered == 1.0:
+			self.BK_NAVCOMM_KX165ABackground.setVisible(True)
 			self.COMM_Frequ_ACT_Text.setVisible(True)
 			self.COMM_Frequ_STBY_Text.setVisible(True)
 			self.NAV_Frequ_ACT_Text.setVisible(True)
 			self.NAV_Frequ_STBY_Text.setVisible(True)
 		else:
+			self.BK_NAVCOMM_KX165ABackground.setVisible(False)
 			self.COMM_Frequ_ACT_Text.setVisible(False)
 			self.COMM_Frequ_STBY_Text.setVisible(False)
 			self.NAV_Frequ_ACT_Text.setVisible(False)

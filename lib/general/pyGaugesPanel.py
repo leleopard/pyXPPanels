@@ -4,21 +4,42 @@
 #   Imports
 #
 #**************************************************************************************************************************
+import sys, getopt
 
+LOGGING_LEVEL = "INFO"
+CONFIG_FILE = "./config.ini"
+
+try:
+	opts, args = getopt.getopt(sys.argv[1:],"c:l:")
+except getopt.GetoptError:
+	print("ERROR:No args passed")
+
+for opt, arg in opts:
+	if opt == '-l':
+		LOGGING_LEVEL = arg
+		print "logging level:", LOGGING_LEVEL
+	if opt == '-c':
+		print('Config file provided')
+		CONFIG_FILE = arg
+		
 import logging
 #------------------------------------------------------------------------------------------
 #	Logging configuration
 #------------------------------------------------------------------------------------------
-FORMAT= '%(asctime)s %(levelname)-8s %(name)-20s %(funcName)-20s  %(message)s'
-logging.basicConfig(format=FORMAT, level=logging.DEBUG)
-#logging.basicConfig(format=FORMAT, level=logging.INFO)
+
+LOGGING_FORMAT= '%(asctime)s %(levelname)-8s %(name)-20s %(funcName)-20s  %(message)s'
+if LOGGING_LEVEL == "DEBUG": 
+	logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG)
+else :
+	logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO)
+	
 logging.info("#########################################################################################################")
 logging.info("#")
 logging.info("#                    STARTING UP")
 logging.info("#")
 logging.info("#########################################################################################################")
 
-import sys, getopt
+
 PYTHON_VERSION = sys.version_info[0] 
 if PYTHON_VERSION == 3:
 	from configparser import *
@@ -57,23 +78,14 @@ class pyGaugesPanel():
 	testValue = 0.0
 	smallTestValueIncrement = 1.0
 	
-	def __init__(self, configFile = "./config.ini"):
-		try:
-			opts, args = getopt.getopt(sys.argv[1:],"c:")
-		except getopt.GetoptError:
-			logging.error("No args passed")
+	def __init__(self):
+		self.loadConfigFile(CONFIG_FILE)
 
-		for opt, arg in opts:
-			if opt == '-c':
-				logging.info('Config file provided')
-				configFile = arg
-		self.loadConfigFile(configFile)
-		
 	
 	def loadConfigFile(self, configFile):
 		Config = ConfigParser()
 		Config.read(configFile)
-
+		
 		#------------------------------------------------------------------------------------------
 		#	Graphics configuration
 		#------------------------------------------------------------------------------------------
