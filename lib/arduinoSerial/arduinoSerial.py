@@ -73,7 +73,7 @@ class ArduinoSerial(threading.Thread):
 					commands = buffer.split('\0')
 					for elem in commands:
 						if len(elem) > 6:
-							pass #self.processArduinoCmd(elem+'\0')  # we should now have a complete command from arduino to process
+							self.processArduinoCmd(elem+'\0')  # we should now have a complete command from arduino to process
 					buffer = ""	# we can now empty the buffer
 				
 				#print("")

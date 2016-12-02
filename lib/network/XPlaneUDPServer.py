@@ -220,7 +220,8 @@ class XPlaneUDPServer(threading.Thread):
 			
 			self.dataList[index] = [value1,value2,value3,value4,value5,value6,value7,value8]
 		else:
-			print("Invalid data index!", index, " Data packet type: ", indexType, "Data group:", dataGroup)
+			pass
+			#print("Invalid data index!", index, " Data packet type: ", indexType, "Data group:", dataGroup)
 			
 		#print ("Index: ", index, "Value1: ", value1, "Value2: ", value2, "Value3: ", value3, "Value4: ", value4)
 	
