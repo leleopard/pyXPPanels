@@ -17,11 +17,12 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
+		self.NAV_COMM_ID = NAV_COMM_ID
 		
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		#self.XPlaneDataDispatcher.requestXPDref( 512, "sim/cockpit2/radios/actuators/com1_power")
-		self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_com1_on")
-		self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_nav1_on")
+		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_com"+str(NAV_COMM_ID)+"_on")
+		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_nav"+str(NAV_COMM_ID)+"_on")
 		self.layer = 1
 		
 		COMM_ACT_INDEX = 0
@@ -77,8 +78,13 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 		
 		
 	def draw(self):
+		powered = 0.0
+		if self.NAV_COMM_ID == 1:
+			powered = self.XPlaneDataDispatcher.getData(310,0)
+		elif self.NAV_COMM_ID == 2:
+			powered = self.XPlaneDataDispatcher.getData(311,0)
 		
-		if self.XPlaneDataDispatcher.getData(310,0) == 1.0:
+		if powered == 1.0:
 			self.COMM_Frequ_ACT_Text.setVisible(True)
 			self.COMM_Frequ_STBY_Text.setVisible(True)
 			self.NAV_Frequ_ACT_Text.setVisible(True)

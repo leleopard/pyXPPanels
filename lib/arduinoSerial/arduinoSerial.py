@@ -66,15 +66,13 @@ class ArduinoSerial(threading.Thread):
 				data = self.serialConnection.read(bytesToRead)		
 				#print("Arduino data: ", data, "data length", len(data))
 				buffer += data
-				print(buffer)
+				print("buffer: ", buffer)
 				
-				if data[len(data)-1] == '\x00':
-					#print(" I contain a NULL terminator")
-					commands = buffer.split('\0')
-					for elem in commands:
-						if len(elem) > 6:
-							self.processArduinoCmd(elem+'\0')  # we should now have a complete command from arduino to process
-					buffer = ""	# we can now empty the buffer
+				commands = buffer.split('\13\10')
+				for elem in commands:
+					if len(elem) > 6:
+						self.processArduinoCmd(elem+'\0')  # we should now have a complete command from arduino to process
+				buffer = commands[len(commands)-1] 	# we can now empty the buffer
 				
 				#print("")
 					
@@ -82,6 +80,7 @@ class ArduinoSerial(threading.Thread):
 			
 	## 
 	def processArduinoCmd(self, buffer):
+		logging.debug("Processing arduino command, command id: "+buffer[0:4])
 		if buffer [0:4] == 'CMND':
 			command = buffer[5:len(buffer)-1]
 			print("i see a command", command)
