@@ -33,18 +33,20 @@ class ArduinoSerial(threading.Thread):
 	def __init__(self, PORT, BAUD, XPUDPServer = None):
 		threading.Thread.__init__(self)
 		self.running = True
-		logging.info("Initialising serial Arduino connection on port: %s", PORT, "BAUD: ", BAUD)
+		logging.info("Initialising serial Arduino connection on port: "+ str(PORT)+ ", BAUD: "+ str(BAUD))
+		self.serialConnection = None
 		
-		self.serialConnection = serial.Serial(PORT, BAUD)
-		self.XPUDPServer = XPUDPServer
-		
-		# reset the arduino
-		#self.serialConnection.setDTR(level=False)  
-		time.sleep(0.5)  
-		# ensure there is no stale data in the buffer
-		self.serialConnection.flushInput()  
-		#self.serialConnection.setDTR()  
+		try:
+			self.serialConnection = serial.Serial(PORT, BAUD)
+			self.XPUDPServer = XPUDPServer
+			
+			time.sleep(0.5)  
+			# ensure there is no stale data in the buffer
+			self.serialConnection.flushInput()  
 
+		except serial.SerialException as e:
+			errorMsg =  str(e)
+			logging.error ( "Serial exception, unable to open connection with Arduino: "+errorMsg)
 		time.sleep(0.5)
 
 		
@@ -56,7 +58,7 @@ class ArduinoSerial(threading.Thread):
 	def run(self):
 		buffer =""
 		
-		while self.running:
+		while self.running and self.serialConnection!=None:
 			
 			#print ("xp server atttempt to receive data...")
 			bytesToRead = self.serialConnection.in_waiting
@@ -99,6 +101,7 @@ class ArduinoSerial(threading.Thread):
 	#--------------------------------------------------------------------------------------------------------------------
 	def quit(self):
 		self.running = False
-		self.serialConnection.close()
+		if self.serialConnection!=None:
+			self.serialConnection.close()
 		logging.info("Arduino Connection stopped...")
 		

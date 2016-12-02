@@ -1,3 +1,4 @@
+# displays a Bendix King radio stack
 from lib.general.pyGaugesPanel import *
 from lib.graphics import OpenGL3lib
 from lib.graphics import graphicsGL3

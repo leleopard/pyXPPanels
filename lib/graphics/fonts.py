@@ -1,6 +1,6 @@
 from lib.graphics import OpenGL3lib
 
-ProFontWindows = "data/fonts/ProFontWindows.ttf"
+ProFontWindows = "data/fonts/ProFontWinTweaked/ProFontWindows.ttf"
 DigitalItalicFont = "data/fonts/DS-Digital-ItalicST.ttf"
 ArialCondensed = "data/fonts/ARIALNB.ttf"
 
