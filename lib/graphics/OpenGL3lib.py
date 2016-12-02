@@ -115,10 +115,11 @@ def buildProgram(vertex_code,fragment_code):
 	gl.glCompileShader(fragment)
 
 	message = gl.glGetShaderInfoLog(vertex)
-	print("Vertex shader compilation messages: ", message)
-	logging.info('Vertex shader message: %s', message)
+	if message != "":
+		logging.warning('Vertex shader compilation message: %s', message)
 	message = gl.glGetShaderInfoLog(fragment)
-	logging.info('Fragment shader message: %s' % message)
+	if message != "":
+		logging.warning('Fragment shader compilation message: %s' % message)
 	# Attach shader objects to the program
 	gl.glAttachShader(program, vertex)
 	gl.glAttachShader(program, fragment)
@@ -163,14 +164,14 @@ def buildProgramBuffer(program, data):
 	# --------------------------------------
 	stride = data.strides[0]
 	offset = ctypes.c_void_p(0)
-	print ("offset: ",offset)
+	logging.debug ("offset: ",offset)
 	loc = gl.glGetAttribLocation(program, "position")
 	gl.glEnableVertexAttribArray(loc)
 	gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
 	gl.glVertexAttribPointer(loc, 3, gl.GL_FLOAT, False, stride, offset)
 
 	offset = ctypes.c_void_p(data.dtype["position"].itemsize)
-	print ("offset: ",offset)
+	logging.debug ("offset: ",offset)
 	loc = gl.glGetAttribLocation(program, "color")
 	gl.glEnableVertexAttribArray(loc)
 	gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
@@ -250,7 +251,7 @@ class GL_BatchImageRenderer():
 		for i in range (0, nrlayers):
 			self.layersContent.append({})
 			self.layerBufferIDs.append({})
-			logging.info("layersContent table: %s", self.layersContent)
+			logging.debug("layersContent table: %s", self.layersContent)
 		
 		self.data = np.zeros(6, [("position", np.float32, 4), 
 								 ("color",    np.float32, 4),
@@ -288,7 +289,7 @@ class GL_BatchImageRenderer():
 			vec3 t_coord = vec3(texCoord, 1.0);
 			v_texCoord = vec2(textMatrix[imageIndex]*t_coord);
 		} """
-		logging.info("Vertex shader code:%s", self.vertex_code)
+		logging.debug("Vertex shader code:%s", self.vertex_code)
 		self.fragment_code = """
 		#version 330
 		in vec4 v_color;
@@ -308,7 +309,7 @@ class GL_BatchImageRenderer():
 		return newbuffer
 
 	def bindAttributes(self, buffer):
-		DEBUG = True
+		
 		# Bind attributes
 		# --------------------------------------
 		gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
@@ -316,9 +317,8 @@ class GL_BatchImageRenderer():
 		stride = self.data.strides[0]
 		offset = ctypes.c_void_p(0)
 		loc = gl.glGetAttribLocation(self.program, "position")
-		if DEBUG == True:
-			print ("offset: ",offset)
-			print ("Attribute position location: ", loc)
+		logging.debug ("offset: ",offset)
+		logging.debug ("Attribute position location: ", loc)
 		gl.glEnableVertexAttribArray(loc)
 		gl.glVertexAttribPointer(loc, 4, gl.GL_FLOAT, gl.GL_FALSE, stride, offset)
 
@@ -332,18 +332,16 @@ class GL_BatchImageRenderer():
 
 		offset = ctypes.c_void_p(self.data.dtype["position"].itemsize+self.data.dtype["color"].itemsize)
 		loc = gl.glGetAttribLocation(self.program, "texCoord")
-		if DEBUG == True:
-			print ("offset: ",offset)
-			print ("Attribute texCoord location: ", loc)
+		logging.debug ("offset: ",offset)
+		logging.debug ("Attribute texCoord location: ", loc)
 		gl.glEnableVertexAttribArray(loc)
 		#gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
 		gl.glVertexAttribPointer(loc, 2, gl.GL_FLOAT, gl.GL_FALSE, stride, offset)
 		
 		offset = ctypes.c_void_p(self.data.dtype["position"].itemsize+self.data.dtype["color"].itemsize+self.data.dtype["texCoord"].itemsize)
 		loc = gl.glGetAttribLocation(self.program, "imageIndex")
-		if DEBUG == True:
-			print ("offset: ",offset)
-			print ("Attribute imageIndex location: ", loc)
+		logging.debug ("offset: ",offset)
+		logging.debug ("Attribute imageIndex location: ", loc)
 		if loc != -1:
 			gl.glEnableVertexAttribArray(loc)
 			#gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
@@ -354,9 +352,9 @@ class GL_BatchImageRenderer():
 		# Bind uniforms
 		# --------------------------------------
 		self.modelMatrixLoc = gl.glGetUniformLocation(self.program, "modelMatrix")
-		logging.info("modelMatrixLoc[0]: %s", self.modelMatrixLoc)
+		logging.debug("modelMatrixLoc[0]: %s", self.modelMatrixLoc)
 		modelMatrixLoc2 = gl.glGetUniformLocation(self.program, "modelMatrix[1]")
-		logging.info("modelMatrixLoc[1]: %s", modelMatrixLoc2)
+		logging.debug("modelMatrixLoc[1]: %s", modelMatrixLoc2)
 		
 		self.modelMatrixLocationsTable = []
 		for i in range (0, self.maxImagesPerBuffer):
@@ -365,7 +363,7 @@ class GL_BatchImageRenderer():
 			else:
 				self.modelMatrixLocationsTable.append(self.modelMatrixLoc+i)	# on PC
 		
-		logging.info("model Matrix location table:%s",self.modelMatrixLocationsTable)
+		logging.debug("model Matrix location table:%s",self.modelMatrixLocationsTable)
 		
 		self.textMatrixLoc = gl.glGetUniformLocation(self.program, "textMatrix")
 		
@@ -377,7 +375,7 @@ class GL_BatchImageRenderer():
 				self.textMatrixLocationsTable.append(self.textMatrixLoc+i)	# on PC
 		
 		self.projMatrixLoc = gl.glGetUniformLocation(self.program, "projectionMatrix")
-		print ("projMatrixLoc location: ", self.projMatrixLoc)
+		logging.debug ("projMatrixLoc location: ", self.projMatrixLoc)
 		
 		
 	def addImageToRenderQueue(self, GL_Image, layer = 0):
@@ -398,15 +396,15 @@ class GL_BatchImageRenderer():
 		for layer in range (0 , len(self.layersContent)): 				# loop layers
 			for textID in self.layersContent[layer] : 					# loop textures dict in the layer
 				numberImages = len(self.layersContent[layer][textID])
-				print( "Fill buffers, layer", layer, "text ID: ", textID, "Number images:", numberImages)
+				logging.debug( "Fill buffers, layer", layer, "text ID: ", textID, "Number images:", numberImages)
 				if numberImages > 0:	# no point creating a buffer if there are no images in this 
 					currentImgTable = self.layersContent[layer][textID]
 					bufferdata = self.layersContent[layer][textID][0].data # start filling the buffer with the data from the first image
-					print ("Current Image table: ", currentImgTable) 
+					logging.debug ("Current Image table: ", currentImgTable) 
 					imageID = currentImgTable[0].id
-					print ("imageID:",imageID)
+					logging.debug ("imageID:",imageID)
 					modelMatrix = currentImgTable[0].modelMatrix
-					print ("model matrix:\n", modelMatrix)
+					logging.debug ("model matrix:\n", modelMatrix)
 					gl.glUniformMatrix4fv(self.modelMatrixLocationsTable[imageID], 1, gl.GL_TRUE, modelMatrix )
 					textMatrix = currentImgTable[0].textMatrix
 					gl.glUniformMatrix3fv(self.textMatrixLocationsTable[imageID], 1, gl.GL_TRUE, textMatrix )
@@ -555,7 +553,7 @@ class GL_Image:
 		self.textMatrix[0,2] = textureTranslation[0]
 		self.textMatrix[1,2] = textureTranslation[1]
 		
-		print ("OpenGL lib Image translate texture", self.textMatrix)
+		logging.debug ("OpenGL lib Image translate texture", self.textMatrix)
 	
 	def draw(self, position=None, width=None, height=None, color=None, rotation=None, rotationCenter=None, textureTranslation = None, textureRotation = 0.0, textureZoom = None, textureRotationCenter = None):
 		
@@ -945,7 +943,7 @@ class GL_Font:
 		# --------------------------------------
 		
 		self.projMatrixLoc = gl.glGetUniformLocation(self.program, "projMatrix")
-		print ("projMatrixLoc location: ", self.projMatrixLoc)
+		logging.debug ("projMatrixLoc location: ", self.projMatrixLoc)
 		
 	def bindAttributes(self, buffer):
 		DEBUG = False
