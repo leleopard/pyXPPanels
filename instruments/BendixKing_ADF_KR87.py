@@ -18,6 +18,8 @@ class BK_ADF_KR87(graphics.Container):
 		
 		self.testMode = False
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
+		self.XPlaneDataDispatcher.requestXPDref(313, "sim/cockpit/radios/adf1_stdby_freq_hz[0]")
+		
 		self.layer = 1
 		
 		TXT_FMT_3DIG_PREC2 = '{:06.2f}'
@@ -25,6 +27,7 @@ class BK_ADF_KR87(graphics.Container):
 		
 		x_DME_txt 		= 10
 		x_ADF_actFrequ 	= 125
+		x_ADF_sbyFrequ 	= 0
 		x_DME_time 		= 302
 		y_frequencies 	= -18
 		#-------------------------------------------------------------------------------------------------
@@ -39,6 +42,12 @@ class BK_ADF_KR87(graphics.Container):
 		self.ADF_ACT_FREQU_Text.setTextFormat('{:03.0f}')
 		self.ADF_ACT_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(101,0))
 		self.addItem(self.ADF_ACT_FREQU_Text, (x_ADF_actFrequ,y_frequencies), False)
+		
+		# ADF standby Frequency text
+		self.ADF_SBY_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
+		self.ADF_SBY_FREQU_Text.setTextFormat('{:03.0f}')
+		self.ADF_SBY_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(313,0))
+		self.addItem(self.ADF_SBY_FREQU_Text, (x_ADF_sbyFrequ,y_frequencies), False)
 		
 		'''
 		# DME Distance text

@@ -45,6 +45,8 @@ class XPlaneUDPServer(threading.Thread):
 		# socket to send data
 		self.sendSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		
+		self.RREF_sockets = [] # list to store RREF sockets, one for each dataref subscribed. Not very elegant, but XPlane does not seem to be able to deal with multiple RREF requests from the same socket
+		
 		self.dataList =[]
 		self.cmddata = None
 		for i in range(0,1024) :
@@ -92,12 +94,15 @@ class XPlaneUDPServer(threading.Thread):
 	
 	## Request Dataref from XPlane
 	# @param string for the dataref to be requested from XPlane - refer to the XPlane doc for a list of available datarefs
-	# 
+	#
 	def requestXPDref(self, index, dataref):
+		RREF_Sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		self.RREF_sockets.append(RREF_Sock)
+		
 		dataref+= '\0'
 		nr_trailing_spaces = 400-len(dataref)
 		
-		msg = "RREF0"
+		msg = "RREF"+'\0'
 		packedindex = pack('<i', index)
 		packedfrequency = pack('<i', 30)
 		msg += packedfrequency
@@ -106,7 +111,7 @@ class XPlaneUDPServer(threading.Thread):
 		msg += ' '*nr_trailing_spaces
 		
 		print(msg)
-		self.sendSock.sendto(msg, self.XPAddress)
+		RREF_Sock.sendto(msg, self.XPAddress)
 		
 	
 	## Enables the redirection of traffic received by the class to XPlane
@@ -152,10 +157,20 @@ class XPlaneUDPServer(threading.Thread):
 			except socket.error as msg: pass
 				#print ("UDP Xplane receive error code ", str(msg[0]), " Message: ", str(msg[1]) )   
 			
-			#try:
-			#	self.sendSock.sendto(self.cmddata, self.XPAddress) # send command to XPlane over UDP
-			#except socket.error as msg: 
-			#	print msg
+			try:
+				for RREFSocket in self.RREF_sockets:
+					rrefdata, rrefaddr = RREFSocket.recvfrom(8192)
+					#print "RREF data:: ", rrefdata
+					
+					if rrefdata[0:4] == 'RREF':
+						index = unpack('<i', rrefdata[5:9])[0]
+						value = unpack('<f', rrefdata[9:13])[0]
+			
+						#print "index ", index, ", value: ", value
+						self.dataList[index][0] = value
+						
+			except : 
+				logging.error("Error receiving RREF data")
 			
 			if self.RDRCT_TRAFFIC == True:
 				try:
