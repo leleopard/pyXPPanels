@@ -10,10 +10,10 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 
-class BK_DME_KN6X(graphics.Container):
+class BK_ADF_KR87(graphics.Container):
 	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "BK_NAVCOMM_KX165A"):
+	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "BK_ADF_KR87"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
@@ -24,27 +24,29 @@ class BK_DME_KN6X(graphics.Container):
 		TXT_FMT_3DIG_PREC3 = '{:07.3f}'
 		
 		x_DME_txt 		= 10
-		x_DME_speed 	= 182
+		x_ADF_actFrequ 	= 125
 		x_DME_time 		= 302
-		y_frequencies 	= -20
+		y_frequencies 	= -18
 		#-------------------------------------------------------------------------------------------------
 		# Background 
 		#-------------------------------------------------------------------------------------------------
-		self.DME_BGD = graphics.ImagePanel(texture, batchImageRenderer, self.layer,(0,0),[417,46],[0,2048-117], "DME_BGD")
-		self.DME_BGD.resize((417,46))
-		self.addItem(self.DME_BGD, (208.5,0), False)
+		self.ADF_BGD = graphics.ImagePanel(texture, batchImageRenderer, self.layer,(0,0),[399,68],[0,2048-186], "ADF_BGD")
+		self.ADF_BGD.resize((399,68))
+		self.addItem(self.ADF_BGD, (199.5,0), False)
 		
+		# ADF Active Frequency text
+		self.ADF_ACT_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
+		self.ADF_ACT_FREQU_Text.setTextFormat('{:03.0f}')
+		self.ADF_ACT_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(101,0))
+		self.addItem(self.ADF_ACT_FREQU_Text, (x_ADF_actFrequ,y_frequencies), False)
+		
+		'''
 		# DME Distance text
-		self.DME_DIST_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
+		#self.DME_DIST_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.DME_DIST_Text.setTextFormat('{:05.1f}')
 		self.DME_DIST_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,3))
 		self.addItem(self.DME_DIST_Text, (x_DME_txt,y_frequencies), False)
 		
-		# DME Speed text
-		self.DME_SPEED_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
-		self.DME_SPEED_Text.setTextFormat('{:03.0f}')
-		self.DME_SPEED_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,4))
-		self.addItem(self.DME_SPEED_Text, (x_DME_speed,y_frequencies), False)
 		
 		# DME time text
 		self.DME_TIME_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
@@ -63,9 +65,10 @@ class BK_DME_KN6X(graphics.Container):
 		self.DME_NAV2_Indicator.setTextFormat('{:01.0f}')
 		self.DME_NAV2_Indicator.setText('2')
 		self.addItem(self.DME_NAV2_Indicator, (x_DME_txt+135,y_frequencies+20), False)
+		'''
 		
 	def draw(self):
-		powered = self.XPlaneDataDispatcher.getData(312,0)
+		'''powered = self.XPlaneDataDispatcher.getData(312,0)
 		if powered ==1.0 :
 			self.setVisible(True)
 			DME_found = self.XPlaneDataDispatcher.getData(102,2)
@@ -94,6 +97,6 @@ class BK_DME_KN6X(graphics.Container):
 			self.DME_SPEED_Text.setVisible(False)
 			self.DME_TIME_Text.setVisible(False)
 			
-			
-		super(BK_DME_KN6X,self).draw()
+		'''
+		super(BK_ADF_KR87,self).draw()
 
