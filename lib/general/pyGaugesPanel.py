@@ -17,7 +17,7 @@ except getopt.GetoptError:
 for opt, arg in opts:
 	if opt == '-l':
 		LOGGING_LEVEL = arg
-		print "logging level:", LOGGING_LEVEL
+		print ("logging level:", LOGGING_LEVEL)
 	if opt == '-c':
 		print('Config file provided')
 		CONFIG_FILE = arg
@@ -108,8 +108,12 @@ class pyGaugesPanel():
 		#------------------------------------------------------------------------------------------
 		#	Arduino configuration
 		#------------------------------------------------------------------------------------------
-		self.ARD_PORT = Config.get("Arduino","PORT")
-		self.ARD_BAUD = Config.getint("Arduino","BAUD")
+		try:
+			self.ARD_PORT = Config.get("Arduino","PORT")
+			self.ARD_BAUD = Config.getint("Arduino","BAUD")
+		except configparser.NoSectionError as e:
+			errorMsg =  str(e)
+			logging.error ( "Arduino configuration section not found, please include if you want to connect an Arduino: "+errorMsg)
 	
 	def initDisplay(self):
 		# Initialize the glfw library
