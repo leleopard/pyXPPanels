@@ -111,9 +111,8 @@ class pyGaugesPanel():
 		try:
 			self.ARD_PORT = Config.get("Arduino","PORT")
 			self.ARD_BAUD = Config.getint("Arduino","BAUD")
-		except configparser.NoSectionError as e:
-			errorMsg =  str(e)
-			logging.error ( "Arduino configuration section not found, please include if you want to connect an Arduino: "+errorMsg)
+		except :
+			logging.warning ( "Arduino configuration section not found, please include if you want to connect an Arduino")
 	
 	def initDisplay(self):
 		# Initialize the glfw library
