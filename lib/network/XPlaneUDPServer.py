@@ -112,6 +112,7 @@ class XPlaneUDPServer(threading.Thread):
 		
 		print(msg)
 		RREF_Sock.sendto(msg, self.XPAddress)
+		RREF_Sock.setblocking(0)
 		
 	
 	## Enables the redirection of traffic received by the class to XPlane
@@ -170,7 +171,8 @@ class XPlaneUDPServer(threading.Thread):
 						self.dataList[index][0] = value
 						
 			except : 
-				logging.error("Error receiving RREF data")
+				pass
+				#logging.error("Error receiving RREF data")
 			
 			if self.RDRCT_TRAFFIC == True:
 				try:

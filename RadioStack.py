@@ -13,6 +13,7 @@ def drawInstruments():
 	DME_KN6X.draw()
 	ADF_KR87.draw()
 	
+	
 
 #********************************************************************************************
 #
@@ -63,8 +64,6 @@ NAVCOMM_BK165_1 = BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A (NAVCOMM_BK165_1_P
 NAVCOMM_BK165_2 = BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A (NAVCOMM_BK165_2_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture, 2 )
 DME_KN6X = BendixKing_DME_KN6X.BK_DME_KN6X (DME_KN6X_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
 ADF_KR87 = BendixKing_ADF_KR87.BK_ADF_KR87 (BK_ADF_KR87_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
-
-#sim/cockpit2/radios/actuators/DME_slave_source	int	y	enum	DME display selection of what NAV radio to display. 0 for Nav1, 1for Nav2.
 
 batchImageRenderer.fillBuffers()
 

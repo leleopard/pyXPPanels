@@ -18,6 +18,8 @@ class BK_DME_KN6X(graphics.Container):
 		
 		self.testMode = False
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
+		self.XPlaneDataDispatcher.requestXPDref(312, "sim/cockpit2/radios/actuators/dme_power[0]")
+		
 		self.layer = 1
 		
 		TXT_FMT_3DIG_PREC2 = '{:06.2f}'

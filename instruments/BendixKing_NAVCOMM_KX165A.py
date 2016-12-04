@@ -20,7 +20,9 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 		self.NAV_COMM_ID = NAV_COMM_ID
 		
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
-		#self.XPlaneDataDispatcher.requestXPDref( 512, "sim/cockpit2/radios/actuators/com1_power")
+		self.XPlaneDataDispatcher.requestXPDref(310, "sim/cockpit2/radios/actuators/com1_power[0]")
+		self.XPlaneDataDispatcher.requestXPDref(311, "sim/cockpit2/radios/actuators/com2_power[0]")
+		
 		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_com"+str(NAV_COMM_ID)+"_on")
 		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_nav"+str(NAV_COMM_ID)+"_on")
 		self.layer = 1

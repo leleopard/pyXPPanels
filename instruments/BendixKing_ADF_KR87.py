@@ -27,7 +27,7 @@ class BK_ADF_KR87(graphics.Container):
 		
 		x_DME_txt 		= 10
 		x_ADF_actFrequ 	= 125
-		x_ADF_sbyFrequ 	= 0
+		x_ADF_sbyFrequ 	= 280
 		x_DME_time 		= 302
 		y_frequencies 	= -18
 		#-------------------------------------------------------------------------------------------------
