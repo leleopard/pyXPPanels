@@ -2,7 +2,6 @@ from lib.graphics import OpenGL3lib
 
 ProFontWindows = "data/fonts/ProFontWinTweaked/ProFontWindows.ttf"
 DigitalItalicFont = "data/fonts/DS-Digital-ItalicST.ttf"
-ArialCondensed = "data/fonts/ARIALNB.ttf"
 Vera = "data/fonts/ttf-bitstream-vera-1.10/Vera.ttf"
 VeraB = "data/fonts/ttf-bitstream-vera-1.10/VeraMoBd.ttf"
 
@@ -41,10 +40,11 @@ PROFONTWINDOWS_VLARGE_WHITE = 		None
 
 
 DIGITAL_ITAL_MED_ORANGE = 		None
-ARIAL_CONDENSED_SMALL_ORANGE = 	None
 
 VERA_VSMALL_ORANGE = None
 VERA_VSMALL_BOLD_ORANGE = None
+VERA_SMALL_BOLD_ORANGE = None
+VERA_MED_BOLD_ORANGE = None
 
 #def __init__(self,fontName,fontSize, fontColor = (255,255,255), antialias = True, fontKerning = 0):
 def initFonts():
@@ -75,6 +75,8 @@ def initFonts():
 	
 	global VERA_VSMALL_ORANGE
 	global VERA_VSMALL_BOLD_ORANGE
+	global VERA_SMALL_BOLD_ORANGE
+	global VERA_MED_BOLD_ORANGE
 	
 
 	PROFONTWINDOWS_VSMALL_WHITE = 		OpenGL3lib.GL_Font(ProFontWindows, FONT_SIZE_VSMALL, TXT_COLOR_WHITE, antialias, fontKerning)
@@ -96,6 +98,9 @@ def initFonts():
 	PROFONTWINDOWS_VLARGE_WHITE = 		OpenGL3lib.GL_Font(ProFontWindows, FONT_SIZE_VLARGE, TXT_COLOR_WHITE, antialias, fontKerning)
 	
 	DIGITAL_ITAL_MED_ORANGE = 			OpenGL3lib.GL_Font(DigitalItalicFont, FONT_SIZE_XLARGE, TXT_COLOR_ORANGE, antialias, -4)
-	ARIAL_CONDENSED_SMALL_ORANGE = 		OpenGL3lib.GL_Font(ArialCondensed, FONT_SIZE_LARGE, TXT_COLOR_ORANGE, antialias, -3)
+
 	VERA_VSMALL_ORANGE = 				OpenGL3lib.GL_Font(Vera, FONT_SIZE_VSMALL, TXT_COLOR_ORANGE, antialias, 0)
-	VERA_VSMALL_BOLD_ORANGE= 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_VSMALL, TXT_COLOR_ORANGE, antialias, 0)
+	VERA_VSMALL_BOLD_ORANGE = 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_VSMALL, TXT_COLOR_ORANGE, antialias, 0)
+	VERA_SMALL_BOLD_ORANGE = 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_SMALL, TXT_COLOR_ORANGE, antialias, 0)
+	VERA_MED_BOLD_ORANGE = 				OpenGL3lib.GL_Font(VeraB, FONT_SIZE_MED, TXT_COLOR_ORANGE, antialias, 0)
+	
