@@ -26,11 +26,12 @@ class BK_ADF_KR87(graphics.Container):
 		TXT_FMT_3DIG_PREC2 = '{:06.2f}'
 		TXT_FMT_3DIG_PREC3 = '{:07.3f}'
 		
-		x_DME_txt 		= 10
-		x_ADF_actFrequ 	= 125
-		x_ADF_sbyFrequ 	= 280
-		x_DME_time 		= 302
-		y_frequencies 	= -18
+		x_ADF_actFrequ 		= 81
+		x_ADF_sbyFrequ 		= 244
+		ydelta_ind_bottom 	= 5
+		ydelta_ind_top 		= 17
+		y_frequencies 		= -18
+		
 		#-------------------------------------------------------------------------------------------------
 		# Background 
 		#-------------------------------------------------------------------------------------------------
@@ -40,30 +41,45 @@ class BK_ADF_KR87(graphics.Container):
 		
 		# ADF Active Frequency text
 		self.ADF_ACT_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
-		self.ADF_ACT_FREQU_Text.setTextFormat('{:03.0f}')
+		self.ADF_ACT_FREQU_Text.setTextFormat('{:> 5.0f}')
 		self.ADF_ACT_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(101,0))
 		self.addItem(self.ADF_ACT_FREQU_Text, (x_ADF_actFrequ,y_frequencies), False)
 		
 		# ADF standby Frequency text
 		self.ADF_SBY_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
-		self.ADF_SBY_FREQU_Text.setTextFormat('{:03.0f}')
+		self.ADF_SBY_FREQU_Text.setTextFormat('{:> 5.0f}')
 		self.ADF_SBY_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(313,0))
 		self.addItem(self.ADF_SBY_FREQU_Text, (x_ADF_sbyFrequ,y_frequencies), False)
 		
 		# ADF ANT indicator
 		self.ADF_ANT_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
 		self.ADF_ANT_Indicator.setText('ANT')
-		self.addItem(self.ADF_ANT_Indicator, (x_ADF_actFrequ-75,y_frequencies+17), False)
+		self.addItem(self.ADF_ANT_Indicator, (x_ADF_actFrequ-46,y_frequencies+ydelta_ind_top), False)
 		
 		# ADF ADF indicator
 		self.ADF_ADF_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
 		self.ADF_ADF_Indicator.setText('ADF')
-		self.addItem(self.ADF_ADF_Indicator, (x_ADF_actFrequ-75,y_frequencies+5), False)
+		self.addItem(self.ADF_ADF_Indicator, (x_ADF_actFrequ-46,y_frequencies+ydelta_ind_bottom), False)
+		
+		# ADF FRQ indicator
+		self.ADF_FRQ_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
+		self.ADF_FRQ_Indicator.setText('FRQ')
+		self.addItem(self.ADF_FRQ_Indicator, (x_ADF_actFrequ+124,y_frequencies+ydelta_ind_bottom), False)
 		
 		# ADF BFO indicator
 		self.ADF_BFO_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
 		self.ADF_BFO_Indicator.setText('BFO')
-		self.addItem(self.ADF_BFO_Indicator, (x_ADF_actFrequ+75,y_frequencies+17), False)
+		self.addItem(self.ADF_BFO_Indicator, (x_ADF_actFrequ+96,y_frequencies+ydelta_ind_top), False)
+		
+		# ADF FLT indicator
+		self.ADF_FLT_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
+		self.ADF_FLT_Indicator.setText('FLT')
+		self.addItem(self.ADF_FLT_Indicator, (x_ADF_sbyFrequ+93,y_frequencies+ydelta_ind_top), False)
+		
+		# ADF ET indicator
+		self.ADF_ET_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
+		self.ADF_ET_Indicator.setText(' ET')
+		self.addItem(self.ADF_ET_Indicator, (x_ADF_sbyFrequ+93,y_frequencies+ydelta_ind_bottom), False)
 
 		
 	def draw(self):

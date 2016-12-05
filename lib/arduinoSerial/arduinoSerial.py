@@ -80,17 +80,17 @@ class ArduinoSerial(threading.Thread):
 			
 	## 
 	def processArduinoCmd(self, buffer):
-		#logging.debug("Processing arduino command, command id: "+buffer[0:4])
+		logging.debug("Processing arduino command, command id: "+buffer[0:4])
 		if buffer [0:4] == 'CMND':
 			command = buffer[5:len(buffer)-1]
-			#print("i see a command", command)
+			logging.debug("i see a command"+ command)
 			
 			self.XPUDPServer.sendXPCmd(command)
 		
 		if buffer [0:4] == 'DREF':
 			dataref = buffer[5:len(buffer)-1]
 						
-			#print("i see a dataref", dataref)
+			logging.debug("i see a dataref"+ dataref)
 			
 			self.XPUDPServer.sendXPDref(dataref)
 	
