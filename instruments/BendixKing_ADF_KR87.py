@@ -19,6 +19,7 @@ class BK_ADF_KR87(graphics.Container):
 		self.testMode = False
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.XPlaneDataDispatcher.requestXPDref(313, "sim/cockpit/radios/adf1_stdby_freq_hz[0]")
+		self.XPlaneDataDispatcher.requestXPDref(314, "sim/cockpit2/radios/actuators/adf1_power[0]")
 		
 		self.layer = 1
 		
@@ -49,63 +50,48 @@ class BK_ADF_KR87(graphics.Container):
 		self.ADF_SBY_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(313,0))
 		self.addItem(self.ADF_SBY_FREQU_Text, (x_ADF_sbyFrequ,y_frequencies), False)
 		
-		'''
-		# DME Distance text
-		#self.DME_DIST_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
-		self.DME_DIST_Text.setTextFormat('{:05.1f}')
-		self.DME_DIST_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,3))
-		self.addItem(self.DME_DIST_Text, (x_DME_txt,y_frequencies), False)
+		# ADF ANT indicator
+		self.ADF_ANT_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
+		self.ADF_ANT_Indicator.setText('ANT')
+		self.addItem(self.ADF_ANT_Indicator, (x_ADF_actFrequ-75,y_frequencies+17), False)
 		
+		# ADF ADF indicator
+		self.ADF_ADF_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
+		self.ADF_ADF_Indicator.setText('ADF')
+		self.addItem(self.ADF_ADF_Indicator, (x_ADF_actFrequ-75,y_frequencies+5), False)
 		
-		# DME time text
-		self.DME_TIME_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
-		self.DME_TIME_Text.setTextFormat('{:03.0f}')
-		self.DME_TIME_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,5))
-		self.addItem(self.DME_TIME_Text, (x_DME_time,y_frequencies), False)
-		
-		# DME NAV1 indicator
-		self.DME_NAV1_Indicator = graphics.TextField(fonts.ARIAL_CONDENSED_SMALL_ORANGE)
-		self.DME_NAV1_Indicator.setTextFormat('{:01.0f}')
-		self.DME_NAV1_Indicator.setText('1')
-		self.addItem(self.DME_NAV1_Indicator, (x_DME_txt+135,y_frequencies), False)
-		
-		# DME NAV2 indicator
-		self.DME_NAV2_Indicator = graphics.TextField(fonts.ARIAL_CONDENSED_SMALL_ORANGE)
-		self.DME_NAV2_Indicator.setTextFormat('{:01.0f}')
-		self.DME_NAV2_Indicator.setText('2')
-		self.addItem(self.DME_NAV2_Indicator, (x_DME_txt+135,y_frequencies+20), False)
-		'''
+		# ADF BFO indicator
+		self.ADF_BFO_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
+		self.ADF_BFO_Indicator.setText('BFO')
+		self.addItem(self.ADF_BFO_Indicator, (x_ADF_actFrequ+75,y_frequencies+17), False)
+
 		
 	def draw(self):
-		'''powered = self.XPlaneDataDispatcher.getData(312,0)
-		if powered ==1.0 :
-			self.setVisible(True)
-			DME_found = self.XPlaneDataDispatcher.getData(102,2)
-			if DME_found == 0.0:
-				self.DME_DIST_Text.setVisible(False)
-				self.DME_SPEED_Text.setVisible(False)
-				self.DME_TIME_Text.setVisible(False)
+		powered = self.XPlaneDataDispatcher.getData(314,0)  # 0 = off, 1 = antenna, 2 = on, 3 = tone, 4 = test
+		if powered >= 1.0 :
+			self.ADF_BGD.setVisible(True)
+			self.ADF_ACT_FREQU_Text.setVisible(True)
+			self.ADF_SBY_FREQU_Text.setVisible(True)
+			if powered == 1.0 :
+				self.ADF_ANT_Indicator.setVisible(True)
+				self.ADF_ADF_Indicator.setVisible(False)
+				self.ADF_BFO_Indicator.setVisible(False)
+			elif powered == 3.0 :
+				self.ADF_ANT_Indicator.setVisible(False)
+				self.ADF_ADF_Indicator.setVisible(True)
+				self.ADF_BFO_Indicator.setVisible(True)
 			else:
-				self.DME_DIST_Text.setVisible(True)
-				self.DME_SPEED_Text.setVisible(True)
-				self.DME_TIME_Text.setVisible(True)
+				self.ADF_ANT_Indicator.setVisible(False)
+				self.ADF_ADF_Indicator.setVisible(True)
+				self.ADF_BFO_Indicator.setVisible(False)
 			
-			ACT_DME = self.XPlaneDataDispatcher.getData(102,0)
-			
-			if ACT_DME == 0.0:
-				self.DME_NAV1_Indicator.setVisible(True)
-				self.DME_NAV2_Indicator.setVisible(False)
-			else:
-				self.DME_NAV1_Indicator.setVisible(False)
-				self.DME_NAV2_Indicator.setVisible(True)
 		else:
-			self.DME_BGD.setVisible(False)
-			self.DME_NAV1_Indicator.setVisible(False)
-			self.DME_NAV2_Indicator.setVisible(False)
-			self.DME_DIST_Text.setVisible(False)
-			self.DME_SPEED_Text.setVisible(False)
-			self.DME_TIME_Text.setVisible(False)
-			
-		'''
+			self.ADF_BGD.setVisible(False)
+			self.ADF_ACT_FREQU_Text.setVisible(False)
+			self.ADF_SBY_FREQU_Text.setVisible(False)
+			self.ADF_ANT_Indicator.setVisible(False)
+			self.ADF_ADF_Indicator.setVisible(False)
+			self.ADF_BFO_Indicator.setVisible(False)
+		
 		super(BK_ADF_KR87,self).draw()
 
