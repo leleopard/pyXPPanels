@@ -37,6 +37,7 @@ class XPlaneUDPServer(threading.Thread):
 		self.XplaneRCVsock.bind(Address) # bind this socket to listen to traffic from XPlane on the address passed to the constructor
 	
 		self.forwardXPDataAddresses = [] # default the forward addresses to empty list
+		self.XPCmd_Callback_Functions = [] # list of callback functions to be called when the class is asked to send a command to XPlane
 		
 		self.RDRCT_TRAFFIC = False # by default we do not redirect incoming traffic to Xplane
 		self.DataRCVsock = False 
@@ -79,6 +80,9 @@ class XPlaneUDPServer(threading.Thread):
 		msg += command
 
 		self.sendSock.sendto(msg, self.XPAddress)
+		
+		for callback in self.XPCmd_Callback_Functions:
+			callback(command)
 	
 	## send Dataref to XPlane
 	# @param string for the dataref to be sent to XPlane - refer to the XPlane doc for a list of available datarefs
@@ -91,6 +95,13 @@ class XPlaneUDPServer(threading.Thread):
 		msg += ' '*nr_trailing_spaces
 		if len(msg) == 509:
 			self.sendSock.sendto(msg, self.XPAddress)
+	
+	## registers a callback function to be called if the class receives a sendXPCmd() call
+	# @param callback - the callback function, it will be given the command string as parameter so your callback must handle the command string
+	#
+	def registerXPCmdCallback(self, callback):
+		self.XPCmd_Callback_Functions.append(callback)
+		
 	
 	## Request Dataref from XPlane
 	# @param string for the dataref to be requested from XPlane - refer to the XPlane doc for a list of available datarefs

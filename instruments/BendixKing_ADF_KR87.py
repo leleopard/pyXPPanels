@@ -22,6 +22,8 @@ class BK_ADF_KR87(graphics.Container):
 		self.XPlaneDataDispatcher.requestXPDref(314, "sim/cockpit2/radios/actuators/adf1_power[0]")
 		self.XPlaneDataDispatcher.requestXPDref(315, "sim/time/total_flight_time_sec[0]")
 		
+		self.XPlaneDataDispatcher.registerXPCmdCallback(self.XPCmdCallback)
+		
 		self.layer = 1
 		
 		TXT_FMT_3DIG_PREC2 = '{:06.2f}'
@@ -94,6 +96,9 @@ class BK_ADF_KR87(graphics.Container):
 		self.ADF_ET_Indicator.setText(' ET')
 		self.addItem(self.ADF_ET_Indicator, (x_ADF_sbyFrequ+93,y_frequencies+ydelta_ind_bottom), False)
 
+	def XPCmdCallback(self, command):
+		print "ADF handling command: ", command
+		
 		
 	def draw(self):
 		powered = self.XPlaneDataDispatcher.getData(314,0)  # 0 = off, 1 = antenna, 2 = on, 3 = tone, 4 = test
