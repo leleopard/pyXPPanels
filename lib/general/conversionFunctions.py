@@ -5,6 +5,28 @@ D = decimal.Decimal
 #------------------------------------------------------------------------------------------
 #	Conversion functions
 #------------------------------------------------------------------------------------------
+
+## Convert input elapsed time in seconds to hh:mm equivalent, and return the mm minutes 
+# @param inValue float elapsed time in seconds 
+# @param XPlaneDataDispatcher the XPlaneUDPServer instance
+#
+def returnMinutes(inValue,XPlaneDataDispatcher):
+	outValue = inValue//60.0 #total minutes elapsed
+	outValue = outValue%60.0
+	
+	return outValue
+
+## Convert input elapsed time in seconds to hh:mm equivalent, and return the hh minutes 
+# @param inValue float elapsed time in seconds 
+# @param XPlaneDataDispatcher the XPlaneUDPServer instance
+#
+def returnHours(inValue,XPlaneDataDispatcher):
+	outValue = inValue/60.0 #total minutes elapsed
+	outValue = outValue//60.0 #total hours elapsed
+	
+	return outValue
+
+	
 def modulo360(inValue,XPlaneDataDispatcher):
 	outValue = inValue%360
 	return outValue
@@ -16,7 +38,6 @@ def divideby100(inValue,XPlaneDataDispatcher):
 def returnSpeedLabelValue(inValue,XPlaneDataDispatcher):
 	outValue = int(float(inValue+0.5)/10.0)
 	return outValue
-	
 
 def returnSpeedTapeValue(inValue,XPlaneDataDispatcher):
 	outValue = int(inValue)

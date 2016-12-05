@@ -20,6 +20,7 @@ class BK_ADF_KR87(graphics.Container):
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.XPlaneDataDispatcher.requestXPDref(313, "sim/cockpit/radios/adf1_stdby_freq_hz[0]")
 		self.XPlaneDataDispatcher.requestXPDref(314, "sim/cockpit2/radios/actuators/adf1_power[0]")
+		self.XPlaneDataDispatcher.requestXPDref(315, "sim/time/total_flight_time_sec[0]")
 		
 		self.layer = 1
 		
@@ -50,6 +51,18 @@ class BK_ADF_KR87(graphics.Container):
 		self.ADF_SBY_FREQU_Text.setTextFormat('{:> 5.0f}')
 		self.ADF_SBY_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(313,0))
 		self.addItem(self.ADF_SBY_FREQU_Text, (x_ADF_sbyFrequ,y_frequencies), False)
+		
+		# ADF flight timer minutes text
+		self.ADF_FLT_TMR_MNS_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
+		self.ADF_FLT_TMR_MNS_Text.setTextFormat('{::>3.0f}')
+		self.ADF_FLT_TMR_MNS_Text.setTextDataSource(self.XPlaneDataDispatcher,(315,0),conversionFunctions.returnMinutes)
+		self.addItem(self.ADF_FLT_TMR_MNS_Text, (x_ADF_sbyFrequ+200,y_frequencies), False)
+		
+		# ADF flight timer hours text
+		self.ADF_FLT_TMR_HRS_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
+		self.ADF_FLT_TMR_HRS_Text.setTextFormat('{:>02.0f}')
+		self.ADF_FLT_TMR_HRS_Text.setTextDataSource(self.XPlaneDataDispatcher,(315,0),conversionFunctions.returnHours)
+		self.addItem(self.ADF_FLT_TMR_HRS_Text, (x_ADF_sbyFrequ+165,y_frequencies), False)
 		
 		# ADF ANT indicator
 		self.ADF_ANT_Indicator = graphics.TextField(fonts.VERA_VSMALL_BOLD_ORANGE)
