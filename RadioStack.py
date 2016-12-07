@@ -12,6 +12,7 @@ def drawInstruments():
 	NAVCOMM_BK165_2.draw()
 	DME_KN6X.draw()
 	ADF_KR87.draw()
+	XPDR_KT70.draw()
 	
 	
 
@@ -40,10 +41,11 @@ RadioStackTexture =	OpenGL3lib.GL_Texture("data/2048_Radio_Stack_text.png")
 #------------------------------------------------------------------------------------------
 #	Instruments position
 #------------------------------------------------------------------------------------------
-NAVCOMM_BK165_1_POS = (50,600)
-NAVCOMM_BK165_2_POS = (50,500)
-DME_KN6X_POS = (50,400)
-BK_ADF_KR87_POS = (50,300)
+NAVCOMM_BK165_1_POS 	= (50,600)
+NAVCOMM_BK165_2_POS 	= (50,500)
+DME_KN6X_POS 			= (50,400)
+BK_ADF_KR87_POS 		= (50,300)
+BK_XPDR_KT70_POS 		= (50,200)
 
 ALT_SIZE = (125,325)
 #------------------------------------------------------------------------------------------
@@ -52,7 +54,7 @@ ALT_SIZE = (125,325)
 from instruments import BendixKing_NAVCOMM_KX165A
 from instruments import BendixKing_DME_KN6X
 from instruments import BendixKing_ADF_KR87
-
+from instruments import BendixKing_XPDR_KT70
 
 #------------------------------------------------------------------------------------------
 #	Initialise Instruments
@@ -60,10 +62,11 @@ from instruments import BendixKing_ADF_KR87
 XPlaneDataServer = RadioStack_Panel.XPlaneDataServer
 batchImageRenderer = OpenGL3lib.GL_BatchImageRenderer(10) # create a batch renderer with 10 layers
 
-NAVCOMM_BK165_1 = BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A (NAVCOMM_BK165_1_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture, 1 )
-NAVCOMM_BK165_2 = BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A (NAVCOMM_BK165_2_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture, 2 )
-DME_KN6X = BendixKing_DME_KN6X.BK_DME_KN6X (DME_KN6X_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
-ADF_KR87 = BendixKing_ADF_KR87.BK_ADF_KR87 (BK_ADF_KR87_POS, ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
+NAVCOMM_BK165_1 	= BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A 	(NAVCOMM_BK165_1_POS, 	ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture, 1 )
+NAVCOMM_BK165_2 	= BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A 	(NAVCOMM_BK165_2_POS, 	ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture, 2 )
+DME_KN6X 			= BendixKing_DME_KN6X.BK_DME_KN6X 				(DME_KN6X_POS, 			ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
+ADF_KR87 			= BendixKing_ADF_KR87.BK_ADF_KR87 				(BK_ADF_KR87_POS, 		ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
+XPDR_KT70 			= BendixKing_XPDR_KT70.BK_XPDR_KT70 			(BK_XPDR_KT70_POS, 		ALT_SIZE, XPlaneDataServer, batchImageRenderer, RadioStackTexture )
 
 batchImageRenderer.fillBuffers()
 

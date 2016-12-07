@@ -26,6 +26,15 @@ def returnHours(inValue,XPlaneDataDispatcher):
 	
 	return outValue
 
+## Given an altitude in feet, return the corresponding altitude in 100s feet 
+# @param inValue float altitude in feet 
+# @param XPlaneDataDispatcher the XPlaneUDPServer instance
+#
+def returnAltitude100sfeet(inValue,XPlaneDataDispatcher):
+	outValue = inValue//100.0 
+	return outValue
+
+	
 	
 def modulo360(inValue,XPlaneDataDispatcher):
 	outValue = inValue%360

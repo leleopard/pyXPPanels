@@ -55,13 +55,13 @@ class BK_DME_KN6X(graphics.Container):
 		self.addItem(self.DME_TIME_Text, (x_DME_time,y_frequencies), False)
 		
 		# DME NAV1 indicator
-		self.DME_NAV1_Indicator = graphics.TextField(fonts.VERA_MED_BOLD_ORANGE)
+		self.DME_NAV1_Indicator = graphics.TextField(fonts.VERA_15PT_BOLD_ORANGE)
 		self.DME_NAV1_Indicator.setTextFormat('{:01.0f}')
 		self.DME_NAV1_Indicator.setText('1')
 		self.addItem(self.DME_NAV1_Indicator, (x_DME_txt+135,y_frequencies), False)
 		
 		# DME NAV2 indicator
-		self.DME_NAV2_Indicator = graphics.TextField(fonts.VERA_MED_BOLD_ORANGE)
+		self.DME_NAV2_Indicator = graphics.TextField(fonts.VERA_15PT_BOLD_ORANGE)
 		self.DME_NAV2_Indicator.setTextFormat('{:01.0f}')
 		self.DME_NAV2_Indicator.setText('2')
 		self.addItem(self.DME_NAV2_Indicator, (x_DME_txt+135,y_frequencies+20), False)
