@@ -8,11 +8,17 @@ sudo apt-get install mercurial python3-pip libfreetype6-dev
 sudo apt-get build-dep python-pygame
 sudo pip3 install hg+http://bitbucket.org/pygame/pygame
 
-2. Install PyOpenGL: type in terminal
-sudo pip install PyOpenGL PyOpenGL_accelerate
 
-3. Install Numpy:
-sudo pip install numpy
+2. Install Numpy:
+sudo pip3 install numpy
+
+3. Install PyOpenGL: type in terminal
+sudo pip3 install PyOpenGL 
+sudo pip3 install PyOpenGL_accelerate
+
+on windows:
+pip3 install PyOpenGL 
+pip3 install PyOpenGL_accelerate
 
 4. Install Pillow
 on linux to allow Pillow to compile install libjpeg first
