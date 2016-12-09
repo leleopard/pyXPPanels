@@ -30,10 +30,13 @@ class BK_ADF_KR87(graphics.Container):
 		
 		self.timer_mode = 0 #// 0 = inactive, 1 = flight time, 2 = elapsed time
 		
-		x_ADF_actFrequ 		= 81
-		x_ADF_sbyFrequ 		= 244
-		x_time_left			= x_ADF_sbyFrequ +200
-		x_time_right		= x_time_left + 45
+		x_ADF_actFrequ 		= 105
+		x_ADF_sbyFrequ 		= 285
+		x_ADF_ANT_indicators = 45
+		x_BFO_indicator 	= 177
+		x_FLT_ET_indicators = 355
+		x_time_left			= x_ADF_sbyFrequ - 33
+		x_time_right		= x_time_left + 55
 		ydelta_ind_bottom 	= -3
 		ydelta_ind_top 		= 19
 		y_frequencies 		= -19
@@ -50,13 +53,13 @@ class BK_ADF_KR87(graphics.Container):
 		#-------------------------------------------------------------------------------------------------
 		# ADF Active Frequency text
 		self.ADF_ACT_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
-		self.ADF_ACT_FREQU_Text.setTextFormat('{:> 5.0f}')
+		self.ADF_ACT_FREQU_Text.setTextFormat('{:0>3.0f}')
 		self.ADF_ACT_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(101,0))
 		self.addItem(self.ADF_ACT_FREQU_Text, (x_ADF_actFrequ,y_frequencies), False)
 		
 		# ADF standby Frequency text
 		self.ADF_SBY_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
-		self.ADF_SBY_FREQU_Text.setTextFormat('{:> 5.0f}')
+		self.ADF_SBY_FREQU_Text.setTextFormat('{:0>3.0f}')
 		self.ADF_SBY_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(313,0))
 		self.addItem(self.ADF_SBY_FREQU_Text, (x_ADF_sbyFrequ,y_frequencies), False)
 		
@@ -93,32 +96,34 @@ class BK_ADF_KR87(graphics.Container):
 		# ADF ANT indicator
 		self.ADF_ANT_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
 		self.ADF_ANT_Indicator.setText('ANT')
-		self.addItem(self.ADF_ANT_Indicator, (x_ADF_actFrequ-46,y_frequencies+ydelta_ind_top), False)
+		self.addItem(self.ADF_ANT_Indicator, (x_ADF_ANT_indicators,y_frequencies+ydelta_ind_top), False)
 		
 		# ADF ADF indicator
 		self.ADF_ADF_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
 		self.ADF_ADF_Indicator.setText('ADF')
-		self.addItem(self.ADF_ADF_Indicator, (x_ADF_actFrequ-46,y_frequencies+ydelta_ind_bottom), False)
+		self.addItem(self.ADF_ADF_Indicator, (x_ADF_ANT_indicators,y_frequencies+ydelta_ind_bottom), False)
+		
+		#-------
+		# ADF BFO indicator
+		self.ADF_BFO_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
+		self.ADF_BFO_Indicator.setText('BFO')
+		self.addItem(self.ADF_BFO_Indicator, (x_BFO_indicator,y_frequencies+ydelta_ind_top), False)
 		
 		# ADF FRQ indicator
 		self.ADF_FRQ_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
 		self.ADF_FRQ_Indicator.setText('FRQ')
-		self.addItem(self.ADF_FRQ_Indicator, (x_ADF_actFrequ+124,y_frequencies+ydelta_ind_bottom), False)
+		self.addItem(self.ADF_FRQ_Indicator, (x_BFO_indicator+ 31,y_frequencies+ydelta_ind_bottom), False)
 		
-		# ADF BFO indicator
-		self.ADF_BFO_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
-		self.ADF_BFO_Indicator.setText('BFO')
-		self.addItem(self.ADF_BFO_Indicator, (x_ADF_actFrequ+96,y_frequencies+ydelta_ind_top), False)
-		
+		#-------
 		# ADF FLT indicator
 		self.ADF_FLT_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
 		self.ADF_FLT_Indicator.setText('FLT')
-		self.addItem(self.ADF_FLT_Indicator, (x_ADF_sbyFrequ+93,y_frequencies+ydelta_ind_top), False)
+		self.addItem(self.ADF_FLT_Indicator, (x_FLT_ET_indicators,y_frequencies+ydelta_ind_top), False)
 		
 		# ADF ET indicator
 		self.ADF_ET_Indicator = graphics.TextField(fonts.VERA_13PT_BOLD_ORANGE)
 		self.ADF_ET_Indicator.setText(' ET')
-		self.addItem(self.ADF_ET_Indicator, (x_ADF_sbyFrequ+93,y_frequencies+ydelta_ind_bottom), False)
+		self.addItem(self.ADF_ET_Indicator, (x_FLT_ET_indicators,y_frequencies+ydelta_ind_bottom), False)
 
 	def XPCmdCallback(self, command):
 		print "ADF handling command: ", command
@@ -183,6 +188,7 @@ class BK_ADF_KR87(graphics.Container):
 			self.ADF_SBY_FREQU_Text.setVisible(False)
 			self.ADF_ANT_Indicator.setVisible(False)
 			self.ADF_ADF_Indicator.setVisible(False)
+			self.ADF_FRQ_Indicator.setVisible(False)
 			self.ADF_BFO_Indicator.setVisible(False)
 			self.ADF_FLT_Indicator.setVisible(False)
 			self.ADF_ET_Indicator.setVisible(False)

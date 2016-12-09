@@ -42,7 +42,7 @@ class BK_XPDR_KT70(graphics.Container):
 		# Flight level label
 		#-------------------------------------------------------------------------------------------------
 		self.XPDR_FL_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
-		self.XPDR_FL_Text.setTextFormat('{:0>3.0f}')
+		self.XPDR_FL_Text.setTextFormat('{:0= 4.0f}')
 		self.XPDR_FL_Text.setTextDataSource(self.XPlaneDataDispatcher,(20,2), conversionFunctions.returnAltitude100sfeet)
 		self.addItem(self.XPDR_FL_Text, (x_flight_level,y_frequencies), False)
 		
@@ -92,6 +92,10 @@ class BK_XPDR_KT70(graphics.Container):
 		transp_mode = self.XPlaneDataDispatcher.getData(319,0) # Transponder mode (off=0,stdby=1,on=2,test=3)
 		transp_light = self.XPlaneDataDispatcher.getData(320,0) # 1.0 = light lit, 0.0 not
 		if transp_mode >= 1.0:
+			if transp_mode != 3.0 : # if we are not in test mode, reset the flight level and code text fields to follow XP values. 
+				self.XPDR_FL_Text.setTextDataSource(self.XPlaneDataDispatcher,(20,2), conversionFunctions.returnAltitude100sfeet)
+				self.XPDR_CODE_Text.setTextDataSource(self.XPlaneDataDispatcher,(318,0))
+			
 			if transp_mode == 1.0 : # Standby. 
 				self.XPDR_R_Indicator.setVisible(False)
 				self.XPDR_BGD.setVisible(True)
@@ -121,9 +125,11 @@ class BK_XPDR_KT70(graphics.Container):
 				self.XPDR_R_Indicator.setVisible(True)
 				self.XPDR_BGD.setVisible(True)
 				self.XPDR_FL_Text.setVisible(True)
+				self.XPDR_FL_Text.setTextDataSource(None, None) # this is to avoid XPlane overriding the test value we will set on next line
 				self.XPDR_FL_Text.setText('-888')
 				
 				self.XPDR_CODE_Text.setVisible(True)
+				self.XPDR_CODE_Text.setTextDataSource(None, None) # this is to avoid XPlane overriding the test value we will set on next line
 				self.XPDR_CODE_Text.setText('8888')
 				
 				self.XPDR_ALT_Indicator.setVisible(True)
