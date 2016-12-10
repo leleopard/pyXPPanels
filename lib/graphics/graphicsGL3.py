@@ -1,4 +1,4 @@
-import sys, pygame
+import sys#, pygame
 import os
 from OpenGL.GL import *
 from OpenGL.GLU import *

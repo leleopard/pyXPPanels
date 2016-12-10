@@ -20,6 +20,9 @@ on windows:
 pip3 install PyOpenGL 
 pip3 install PyOpenGL_accelerate
 
+4. install pyserial
+pip3 install pyserial
+
 4. Install Pillow
 on linux to allow Pillow to compile install libjpeg first
 sudo apt-get install libjpeg-dev
