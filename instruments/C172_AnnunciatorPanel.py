@@ -69,17 +69,9 @@ class C172_AnnunciatorPanel(graphics.Container):
 		self.addItem(self.C172_AnnunciatorPanel_apdisconnect, (annunc_xoffset+107*3,annunc_yoffset-25), False)
 
 
-		'''
-		self.C172_AnnunciatorPanel_apdisconnect  = graphics.ImagePanel("C172_AnnunciatorPanel/C172_annunciatorpanel_apdisconnect")
-		self.C172_AnnunciatorPanel_apdisconnect.toggleVisibility(self.XPlaneDataDispatcher, (113,3), conversionFunctions.returnTrueIfOverZero)
-		self.addItem(self.C172_AnnunciatorPanel_apdisconnect, (0,0), False)
-		
-		self.C172_AnnunciatorPanel_lowvacuum  = graphics.ImagePanel("C172_AnnunciatorPanel/C172_annunciatorpanel_lowvacuum")
-		self.C172_AnnunciatorPanel_lowvacuum.toggleVisibility(self.XPlaneDataDispatcher, (113,4), conversionFunctions.returnTrueIfOverZero)
-		self.addItem(self.C172_AnnunciatorPanel_lowvacuum, (0,0), False)
-		
-		'''
 	def draw(self):
+		#self.XPlaneDataDispatcher.printData(113)
+		#self.XPlaneDataDispatcher.printData(114)
 		
 		super(C172_AnnunciatorPanel,self).draw()
 

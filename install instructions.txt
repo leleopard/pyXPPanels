@@ -1,13 +1,7 @@
 If using python3 replace pip by pip3
+! on windows, need to check you have the correct visual studio installed (version used to compile your python version) in order to be able to use pip
 
-1. Install python 3 and pygame - follow instructions here:
-OS X: http://kidscancode.org/blog/2015/09/pygame_install
-
-on linux:
-sudo apt-get install mercurial python3-pip libfreetype6-dev
-sudo apt-get build-dep python-pygame
-sudo pip3 install hg+http://bitbucket.org/pygame/pygame
-
+1. Install python 3 
 
 2. Install Numpy:
 sudo pip3 install numpy
@@ -27,7 +21,7 @@ pip3 install pyserial
 on linux to allow Pillow to compile install libjpeg first
 sudo apt-get install libjpeg-dev
  
-sudo pip install Pillow
+sudo pip3 install Pillow
 
 
 5. Install GLFW - MAC

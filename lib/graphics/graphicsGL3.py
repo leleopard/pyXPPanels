@@ -597,12 +597,15 @@ class ImagePanel(Panel):
 		self.image.needRefresh = False
 		
 		if self.visibilityXPData:
+			
 			if self.testMode == False:
 				XPindicatedValue = float(self.visibilityXPdataSource.getData(self.visibilityXPData[0],self.visibilityXPData[1]))
 			else: 
 				XPindicatedValue = self.testValue
 				
-			self.visible = self.visibilityToggleFunction(XPindicatedValue,self.visibilityXPdataSource)
+			self.image.visible = self.visibilityToggleFunction(XPindicatedValue,self.visibilityXPdataSource)
+			self.visible = self.image.visible
+			logging.debug("VisibilityXPdata: %s", self.image.visible)
 			needRefresh = True
 			
 		if self.refreshVisibility == True:

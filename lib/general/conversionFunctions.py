@@ -173,7 +173,11 @@ def NAV_GSFLG_Toggle (XPindicatedValue,XPlaneDataDispatcher):
 		return True
 	else:
 		return False
-		
+
+## returns True if the value passed is greater than 0, False otherwise 
+# @param inValue float value 
+# @param XPlaneDataDispatcher the XPlaneUDPServer instance
+#
 def returnTrueIfOverZero(XPindicatedValue,XPlaneDataDispatcher):
 	if XPindicatedValue > 0.0:
 		return True
