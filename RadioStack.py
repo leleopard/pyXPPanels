@@ -15,7 +15,7 @@ def drawInstruments():
 	XPDR_KT70.draw()
 	
 	GL_PIL_Font.draw("0.123456789+-:/test PIL",200,100)
-	GL_Normal_Font.draw("0.123456789+-:/test non PIL",200,200)
+	#GL_Normal_Font.draw("0.123456789+-:/test non PIL",200,200)
 	
 	
 
@@ -75,7 +75,7 @@ batchImageRenderer.fillBuffers()
 
 #GL_PIL_Font = OpenGL3lib.GL_Font_PIL("data/fonts/ttf-bitstream-vera-1.10/Vera.ttf",20,(211,62,33))
 GL_PIL_Font = OpenGL3lib.GL_Font("data/fonts/DS-Digital-ItalicST.ttf",40,(211,62,33))
-GL_Normal_Font = OpenGL3lib.GL_Font_OLD_PYGAME("data/fonts/DS-Digital-ItalicST.ttf",40,(211,62,33))
+#GL_Normal_Font = OpenGL3lib.GL_Font_OLD_PYGAME("data/fonts/DS-Digital-ItalicST.ttf",40,(211,62,33))
 
 
 RadioStack_Panel.run()

@@ -2,7 +2,6 @@ import os
 import glob
 import logging
 import decimal
-import pygame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 D = decimal.Decimal

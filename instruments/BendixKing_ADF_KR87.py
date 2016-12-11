@@ -126,7 +126,7 @@ class BK_ADF_KR87(graphics.Container):
 		self.addItem(self.ADF_ET_Indicator, (x_FLT_ET_indicators,y_frequencies+ydelta_ind_bottom), False)
 
 	def XPCmdCallback(self, command):
-		print "ADF handling command: ", command
+		logging.debug("ADF handling command: "+ command)
 		self.timer_mode
 		# // 0 = inactive, 1 = flight time, 2 = elapsed time
 		if (command == "ST/time/timer_mode_0"): self.timer_mode = 0

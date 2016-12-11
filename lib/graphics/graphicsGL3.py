@@ -12,7 +12,7 @@ from lib.glfw import glfw
 from lib.graphics import OpenGL3lib
 from lib.graphics import fonts
 from lib.network import XPlaneUDPServer
-from lib.general import EventsManager
+#from lib.general import EventsManager
 
 ## @package Graphics module. Collection of high level graphics objects 
 

@@ -1,4 +1,4 @@
-import threading
+import sys, threading
 import socket
 import logging
 import time
@@ -21,6 +21,8 @@ from struct import *
 # value = XPlaneDataDispatcher.dataList[17][3] 	# read the value sent by XPlane for datagroup 17, position 4 (mag heading)
 # @endcode
 #
+
+PYTHON_VERSION = sys.version_info[0] 
 
 class XPlaneUDPServer(threading.Thread):
 
@@ -116,13 +118,14 @@ class XPlaneUDPServer(threading.Thread):
 		msg = "RREF"+'\0'
 		packedindex = pack('<i', index)
 		packedfrequency = pack('<i', 30)
-		msg += packedfrequency
-		msg += packedindex
+		msg += packedfrequency.decode(encoding = 'ascii')
+		msg += packedindex.decode(encoding = 'ascii')
 		msg += dataref
 		msg += ' '*nr_trailing_spaces
 		
-		print(msg)
-		RREF_Sock.sendto(msg, self.XPAddress)
+		logging.debug("Requesting DataRef, RREF msg: %s", msg)
+		
+		RREF_Sock.sendto(msg.encode('ascii'), self.XPAddress)
 		RREF_Sock.setblocking(0)
 		
 	
@@ -172,13 +175,13 @@ class XPlaneUDPServer(threading.Thread):
 			try:
 				for RREFSocket in self.RREF_sockets:
 					rrefdata, rrefaddr = RREFSocket.recvfrom(8192)
-					#print "RREF data:: ", rrefdata
+					logging.debug("RREF data:: "+ str(rrefdata))
 					
-					if rrefdata[0:4] == 'RREF':
+					if rrefdata[0:4].decode('ascii') == 'RREF':
 						index = unpack('<i', rrefdata[5:9])[0]
 						value = unpack('<f', rrefdata[9:13])[0]
 			
-						#print "index ", index, ", value: ", value
+						logging.debug("RREF index "+str(index) + ", value: "+ str(value))
 						self.dataList[index][0] = value
 						
 			except : 
@@ -251,7 +254,7 @@ class XPlaneUDPServer(threading.Thread):
 			pass
 			#print("Invalid data index!", index, " Data packet type: ", indexType, "Data group:", dataGroup)
 			
-		#print ("Index: ", index, "Value1: ", value1, "Value2: ", value2, "Value3: ", value3, "Value4: ", value4)
+		#logging.debug ("DATA Index: "+ str(index)+ "Value1: "+ str(value1)+ "Value2: "+ str(value2)+ "Value3: " + str(value3)+ "Value4: "+ str(value4))
 	
 		
 	

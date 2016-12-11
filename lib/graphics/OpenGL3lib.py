@@ -1,4 +1,3 @@
-import pygame
 import os
 import math
 import logging
@@ -168,14 +167,14 @@ def buildProgramBuffer(program, data):
 	# --------------------------------------
 	stride = data.strides[0]
 	offset = ctypes.c_void_p(0)
-	logging.debug ("offset: ",offset)
+	logging.debug ("offset: " + str(offset))
 	loc = gl.glGetAttribLocation(program, "position")
 	gl.glEnableVertexAttribArray(loc)
 	gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
 	gl.glVertexAttribPointer(loc, 3, gl.GL_FLOAT, False, stride, offset)
 
 	offset = ctypes.c_void_p(data.dtype["position"].itemsize)
-	logging.debug ("offset: ",offset)
+	logging.debug ("offset: "  + str(offset))
 	loc = gl.glGetAttribLocation(program, "color")
 	gl.glEnableVertexAttribArray(loc)
 	gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
@@ -191,7 +190,7 @@ class GL_Texture():
 		
 	def loadImageToTexture(self, imagefile, CLAMPTOBORDER = False):
 		self.name = imagefile
-		logging.debug("loading image file to texture: %s", imagefile)
+		logging.debug("loading image file to texture: %s" + str(imagefile))
 		imagefilePath = os.path.join(os.path.dirname(__file__), '../../',imagefile)
 		im = Image.open(imagefilePath)
 		
@@ -255,7 +254,7 @@ class GL_BatchImageRenderer():
 		for i in range (0, nrlayers):
 			self.layersContent.append({})
 			self.layerBufferIDs.append({})
-			logging.debug("layersContent table: %s", self.layersContent)
+			logging.debug("layersContent table: %s" + str (self.layersContent))
 		
 		self.data = np.zeros(6, [("position", np.float32, 4), 
 								 ("color",    np.float32, 4),
@@ -293,7 +292,7 @@ class GL_BatchImageRenderer():
 			vec3 t_coord = vec3(texCoord, 1.0);
 			v_texCoord = vec2(textMatrix[imageIndex]*t_coord);
 		} """
-		logging.debug("Vertex shader code:%s", self.vertex_code)
+		logging.debug("Vertex shader code:%s" + str (self.vertex_code))
 		self.fragment_code = """
 		#version 330
 		in vec4 v_color;
@@ -321,8 +320,8 @@ class GL_BatchImageRenderer():
 		stride = self.data.strides[0]
 		offset = ctypes.c_void_p(0)
 		loc = gl.glGetAttribLocation(self.program, "position")
-		logging.debug ("offset: ",offset)
-		logging.debug ("Attribute position location: ", loc)
+		logging.debug ("offset: "+ str(offset))
+		logging.debug ("Attribute position location: " + str(loc))
 		gl.glEnableVertexAttribArray(loc)
 		gl.glVertexAttribPointer(loc, 4, gl.GL_FLOAT, gl.GL_FALSE, stride, offset)
 
@@ -336,16 +335,16 @@ class GL_BatchImageRenderer():
 
 		offset = ctypes.c_void_p(self.data.dtype["position"].itemsize+self.data.dtype["color"].itemsize)
 		loc = gl.glGetAttribLocation(self.program, "texCoord")
-		logging.debug ("offset: ",offset)
-		logging.debug ("Attribute texCoord location: ", loc)
+		logging.debug ("offset: "+ str(offset))
+		logging.debug ("Attribute texCoord location: "+ str(loc))
 		gl.glEnableVertexAttribArray(loc)
 		#gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
 		gl.glVertexAttribPointer(loc, 2, gl.GL_FLOAT, gl.GL_FALSE, stride, offset)
 		
 		offset = ctypes.c_void_p(self.data.dtype["position"].itemsize+self.data.dtype["color"].itemsize+self.data.dtype["texCoord"].itemsize)
 		loc = gl.glGetAttribLocation(self.program, "imageIndex")
-		logging.debug ("offset: ",offset)
-		logging.debug ("Attribute imageIndex location: ", loc)
+		logging.debug ("offset: "+ str(offset))
+		logging.debug ("Attribute imageIndex location: " + str(loc))
 		if loc != -1:
 			gl.glEnableVertexAttribArray(loc)
 			#gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buffer)
@@ -356,9 +355,9 @@ class GL_BatchImageRenderer():
 		# Bind uniforms
 		# --------------------------------------
 		self.modelMatrixLoc = gl.glGetUniformLocation(self.program, "modelMatrix")
-		logging.debug("modelMatrixLoc[0]: %s", self.modelMatrixLoc)
+		logging.debug("modelMatrixLoc[0]: %s" + str(self.modelMatrixLoc))
 		modelMatrixLoc2 = gl.glGetUniformLocation(self.program, "modelMatrix[1]")
-		logging.debug("modelMatrixLoc[1]: %s", modelMatrixLoc2)
+		logging.debug("modelMatrixLoc[1]: %s" + str(modelMatrixLoc2))
 		
 		self.modelMatrixLocationsTable = []
 		for i in range (0, self.maxImagesPerBuffer):
@@ -367,7 +366,7 @@ class GL_BatchImageRenderer():
 			else:
 				self.modelMatrixLocationsTable.append(self.modelMatrixLoc+i)	# on PC
 		
-		logging.debug("model Matrix location table:%s",self.modelMatrixLocationsTable)
+		logging.debug("model Matrix location table:%s" + str(self.modelMatrixLocationsTable))
 		
 		self.textMatrixLoc = gl.glGetUniformLocation(self.program, "textMatrix")
 		
@@ -379,7 +378,7 @@ class GL_BatchImageRenderer():
 				self.textMatrixLocationsTable.append(self.textMatrixLoc+i)	# on PC
 		
 		self.projMatrixLoc = gl.glGetUniformLocation(self.program, "projectionMatrix")
-		logging.debug ("projMatrixLoc location: ", self.projMatrixLoc)
+		logging.debug ("projMatrixLoc location: " + str(self.projMatrixLoc))
 		
 		
 	def addImageToRenderQueue(self, GL_Image, layer = 0):
@@ -400,15 +399,15 @@ class GL_BatchImageRenderer():
 		for layer in range (0 , len(self.layersContent)): 				# loop layers
 			for textID in self.layersContent[layer] : 					# loop textures dict in the layer
 				numberImages = len(self.layersContent[layer][textID])
-				logging.debug( "Fill buffers, layer", layer, "text ID: ", textID, "Number images:", numberImages)
+				logging.debug( "Fill buffers, layer" + str(layer) + "text ID: " + str(textID)+ "Number images:" + str(numberImages))
 				if numberImages > 0:	# no point creating a buffer if there are no images in this 
 					currentImgTable = self.layersContent[layer][textID]
 					bufferdata = self.layersContent[layer][textID][0].data # start filling the buffer with the data from the first image
-					logging.debug ("Current Image table: ", currentImgTable) 
+					logging.debug ("Current Image table: "  + str(currentImgTable)) 
 					imageID = currentImgTable[0].id
-					logging.debug ("imageID:",imageID)
+					logging.debug ("imageID:" + str(imageID))
 					modelMatrix = currentImgTable[0].modelMatrix
-					logging.debug ("model matrix:\n", modelMatrix)
+					logging.debug ("model matrix:\n"+ str(modelMatrix))
 					gl.glUniformMatrix4fv(self.modelMatrixLocationsTable[imageID], 1, gl.GL_TRUE, modelMatrix )
 					textMatrix = currentImgTable[0].textMatrix
 					gl.glUniformMatrix3fv(self.textMatrixLocationsTable[imageID], 1, gl.GL_TRUE, textMatrix )
@@ -438,7 +437,7 @@ class GL_BatchImageRenderer():
 					self.layerBufferIDs[layer][textID][1] = VAO_ID
 					self.layerBufferIDs[layer][textID][2] = bufferdata
 					gl.glBindVertexArray( 0 )
-					logging.debug("GL_BatchImageRenderer: Buffer ID: %s",bufferID)
+					logging.debug("GL_BatchImageRenderer: Buffer ID: %s"  + str(bufferID))
 		
 		logging.debug("GL_BatchImageRenderer: layerBufferIDs table content: ")
 		logging.debug( self.layerBufferIDs)
@@ -836,7 +835,7 @@ class GL_Filled_Rectangle:
 		
 		gl.glDrawArrays(gl.GL_TRIANGLES, 0, 6)
 		
-
+'''
 class GL_Font_OLD_PYGAME:
 	vertex_code = """
     #version 330
@@ -1027,7 +1026,7 @@ class GL_Font_OLD_PYGAME:
 		gl.glUniformMatrix4fv(self.projMatrixLoc, 1, gl.GL_TRUE, PROJ_MATRIX)
 		gl.glDrawArrays(gl.GL_TRIANGLES, 0, 6*(length+1))
 		gl.glBindVertexArray(0)
-
+'''
 class GL_Font:
 	vertex_code = """
     #version 330
@@ -1060,12 +1059,7 @@ class GL_Font:
 		self.antialias = antialias
 		self.fontColor = fontColor
 		self.fontKerning = fontKerning
-		pygame.font.init()
-		if not pygame.font.get_init():
-			logging.error ('Could not render font.')
-			return -1
 		fontPath = os.path.join(os.path.dirname(__file__), '../../',fontName)
-		#self.font = pygame.font.Font(fontPath,fontSize)
 		self.font = ImageFont.truetype(fontPath, fontSize)
 		self.char = []
 		self.textWidth = 0
@@ -1083,10 +1077,6 @@ class GL_Font:
 			letter_im  =  Image.new ( "RGBA", (letter_w, letter_h), (self.fontColor[0],self.fontColor[1],self.fontColor[2],0) )
 			draw  =  ImageDraw.Draw ( letter_im )
 			draw.text ( (0,0), chr(ch), font=self.font, fill=self.fontColor )
-			#letter.save ( "runaway.jpg" )
-			#letter_render = self.font.render(chr(ch), self.antialias, self.fontColor)
-			#letter = pygame.image.tostring(letter_render, 'RGBA', 1)
-			#letter = Image.frombytes('RGBA', (letter_w, letter_h), letter_render)
 			#letter_im.save('letters\letter'+str(ch)+'.png')
 			letter_im = letter_im.transpose(Image.FLIP_TOP_BOTTOM)
 			im_data = np.fromstring(letter_im.tobytes(), np.uint8)
@@ -1149,7 +1139,7 @@ class GL_Font:
 		# --------------------------------------
 		
 		self.projMatrixLoc = gl.glGetUniformLocation(self.program, "projMatrix")
-		logging.debug ("projMatrixLoc location: ", self.projMatrixLoc)
+		logging.debug ("projMatrixLoc location: "+ str(self.projMatrixLoc))
 		
 	def bindAttributes(self, buffer):
 		DEBUG = False
