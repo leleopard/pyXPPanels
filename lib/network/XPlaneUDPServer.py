@@ -175,13 +175,13 @@ class XPlaneUDPServer(threading.Thread):
 			try:
 				for RREFSocket in self.RREF_sockets:
 					rrefdata, rrefaddr = RREFSocket.recvfrom(8192)
-					logging.debug("RREF data:: "+ str(rrefdata))
+					#logging.debug("RREF data:: "+ str(rrefdata))
 					
 					if rrefdata[0:4].decode('ascii') == 'RREF':
 						index = unpack('<i', rrefdata[5:9])[0]
 						value = unpack('<f', rrefdata[9:13])[0]
 			
-						logging.debug("RREF index "+str(index) + ", value: "+ str(value))
+						#logging.debug("RREF index "+str(index) + ", value: "+ str(value))
 						self.dataList[index][0] = value
 						
 			except : 
