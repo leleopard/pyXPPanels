@@ -865,7 +865,7 @@ class GL_Font:
 		
 		x = 0
 		for ch in range(0,len(self.char)):
-			gl.glTexSubImage2D(gl.GL_TEXTURE_2D, 0, x, 0, self.char[ch][0], self.char[ch][1], gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, self.char[ch][2])
+			gl.glTexSubImage2D(gl.GL_TEXTURE_2D, 0, x, self.textHeight-self.char[ch][1], self.char[ch][0], self.char[ch][1], gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, self.char[ch][2])
 			x += self.charWidth
 		
 		self.program = buildProgram(self.vertex_code,self.fragment_code)

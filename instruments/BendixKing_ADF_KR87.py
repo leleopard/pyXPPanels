@@ -39,7 +39,7 @@ class BK_ADF_KR87(graphics.Container):
 		x_time_right		= x_time_left + 55
 		ydelta_ind_bottom 	= -3
 		ydelta_ind_top 		= 19
-		y_frequencies 		= -19
+		y_frequencies 		= -20
 		
 		#-------------------------------------------------------------------------------------------------
 		# Background 
