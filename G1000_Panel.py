@@ -4,9 +4,9 @@ import ConfigParser
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import OpenGLlib
+from lib.graphics import OpenGLlib
 
-import XPlaneUDPServer
+from lib.network import XPlaneUDPServer
 import XPinstrument
 import logging
 

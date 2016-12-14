@@ -89,7 +89,7 @@ class BK_XPDR_KT70(graphics.Container):
 
 
 	def draw(self):
-		transp_mode = self.XPlaneDataDispatcher.getData(319,0) # Transponder mode (off=0,stdby=1,on=2,test=3)
+		transp_mode = self.XPlaneDataDispatcher.getData(319,0) # Transponder mode (off=0,stdby=1,on=2,test=3) ALT=4, GND=5
 		transp_light = self.XPlaneDataDispatcher.getData(320,0) # 1.0 = light lit, 0.0 not
 		if transp_mode >= 1.0:
 			if transp_mode != 3.0 : # if we are not in test mode, reset the flight level and code text fields to follow XP values. 
@@ -138,7 +138,7 @@ class BK_XPDR_KT70(graphics.Container):
 				self.XPDR_SBY_Indicator.setVisible(True)
 				self.XPDR_FL_Indicator.setVisible(True)
 			
-			if transp_mode >= 4.0 : # assuming we are in ALT mode then?
+			if transp_mode == 4.0 : # we are in ALT mode 
 				
 				if transp_light == 0.0 :
 					self.XPDR_R_Indicator.setVisible(False)
@@ -154,6 +154,21 @@ class BK_XPDR_KT70(graphics.Container):
 				self.XPDR_SBY_Indicator.setVisible(False)
 				self.XPDR_FL_Indicator.setVisible(True)
 			
+			if transp_mode == 5.0 : # we are in GND mode 
+				
+				if transp_light == 0.0 :
+					self.XPDR_R_Indicator.setVisible(False)
+				else: 
+					self.XPDR_R_Indicator.setVisible(True)
+				
+				self.XPDR_BGD.setVisible(True)
+				self.XPDR_FL_Text.setVisible(True)
+				self.XPDR_CODE_Text.setVisible(True)
+				self.XPDR_ALT_Indicator.setVisible(False)
+				self.XPDR_ON_Indicator.setVisible(False)
+				self.XPDR_GND_Indicator.setVisible(True)
+				self.XPDR_SBY_Indicator.setVisible(False)
+				self.XPDR_FL_Indicator.setVisible(True)
 			
 		else:
 			self.XPDR_BGD.setVisible(False)

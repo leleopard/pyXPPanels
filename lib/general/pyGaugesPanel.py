@@ -90,6 +90,7 @@ class pyGaugesPanel():
 		#	Graphics configuration
 		#------------------------------------------------------------------------------------------
 		self.fullscreen = Config.getboolean("Graphics","Fullscreen")
+		self.monitorID = Config.getint("Graphics","MonitorID")
 		self.width = Config.getint("Graphics","ScreenWidth")
 		self.height = Config.getint("Graphics","ScreenHeight")
 		self.bufferSwapInterval = Config.getint("Graphics","BufferSwapInterval")
@@ -134,10 +135,13 @@ class pyGaugesPanel():
 			logging.info("I have the monitors, %s", monitors)
 			
 			monitorVideoModes = glfw.glfwGetVideoModes(monitors[0])
-			print("monitorVideoModes:", monitorVideoModes)
+			logging.info("monitorVideoModes: %s", monitorVideoModes)
+			monitor_id = 0
+			if self.monitorID >=0 and self.monitorID <len(monitors):
+				monitor_id = self.monitorID
 			
 			#logging.info("Entering full screen, screen width: %s, height %s", monitorVideoMode[0], monitorVideoMode[1])
-			self.window = glfw.glfwCreateWindow(self.width, self.height, str.encode("pyGaugesPanel"), monitors[0], None)
+			self.window = glfw.glfwCreateWindow(self.width, self.height, str.encode("pyGaugesPanel"), monitors[monitor_id], None)
 		else:
 			self.window = glfw.glfwCreateWindow(self.width, self.height, str.encode("pyGaugesPanel"), None, None)
 		
@@ -256,13 +260,15 @@ class pyGaugesPanel():
 		self.scrollCallBacks.append(scrollCallBack)
 	
 	def framebuffer_size_callback(self, window, width,  height):
-		self.frameBufferWidth = width
-		self.frameBufferHeight = height
-		gl.glViewport(0, 0, width, height)
-		gl3lib.screenWidth = self.frameBufferWidth
-		gl3lib.screenHeight = self.frameBufferHeight
-		gl3lib.PROJ_MATRIX[0,0] = 2.0/width
-		gl3lib.PROJ_MATRIX[1,1] = 2.0/height
+		logging.debug("width, height: %s x %s", width, height )
+		if self.fullscreen != True:
+			self.frameBufferWidth = width
+			self.frameBufferHeight = height
+			gl.glViewport(0, 0, width, height)
+			gl3lib.screenWidth = self.frameBufferWidth
+			gl3lib.screenHeight = self.frameBufferHeight
+			gl3lib.PROJ_MATRIX[0,0] = 2.0/width
+			gl3lib.PROJ_MATRIX[1,1] = 2.0/height
 	
 	def setDrawCallback(self, drawCallbackFunc):
 		self.drawCallbackFunc = drawCallbackFunc
