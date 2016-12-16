@@ -36,7 +36,7 @@ def drawInstruments():
 	RPM.draw()
 	
 	Compass.draw()
-	
+	PitchTrimSlider.draw()
 	batchImageRenderer.render()
 	
 	#airportPlatesBrowser.draw()
@@ -64,7 +64,7 @@ testGaugesPanel.setDrawCallback(drawInstruments)
 #------------------------------------------------------------------------------------------
 standard6Texture = 	OpenGL3lib.GL_Texture("data/c172_text_standard6.png")
 compassTexture =	OpenGL3lib.GL_Texture("data/gen_compass.png")
-
+sliderTexture = 	OpenGL3lib.GL_Texture("data/gen_slider.png")
 #------------------------------------------------------------------------------------------
 #	Instruments position
 #------------------------------------------------------------------------------------------
@@ -128,6 +128,7 @@ from instruments import C172_ADF
 from instruments import C172_RPM_Indicator
 from instruments import GenCompass
 from instruments import AirportPlatesBrowser
+from instruments import Gen_SliderIndicator
 
 #------------------------------------------------------------------------------------------
 #	Initialise Instruments
@@ -167,6 +168,9 @@ ADF = 				C172_ADF.C172_ADF								(ADF_pos,			standardInstrumentSize, XPlaneDat
 RPM = 				C172_RPM_Indicator.C172_RPM_Indicator			(RPM_pos,			(280,280)			  , XPlaneDataServer, batchImageRenderer, standard6Texture, 0.9)		#calibrated
 
 Compass = 			GenCompass.GenCompass							(Compass_pos,		(120,66)			  , XPlaneDataServer, batchImageRenderer, compassTexture)
+
+PitchTrimSlider = 	Gen_SliderIndicator.Gen_SliderIndicator			((1350,500),		(100,30), 				XPlaneDataServer, batchImageRenderer, sliderTexture)
+
 
 #airportPlatesBrowser = AirportPlatesBrowser.AirportPlatesBrowser([1000,testGaugesPanel.frameBufferHeight-950], [570,840], testGaugesPanel, batchImageRenderer)
 

@@ -10,34 +10,24 @@ from lib.general import conversionFunctions
 class Gen_SliderIndicator(graphics.Container):
 	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, name = "Gen_SliderIndicator"):
+	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, layer = 0, name = "Gen_SliderIndicator"):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
-		self.layer = 0
+		self.layer = layer
 		
-		#------------------------------------------------------------------------------------------
-		#	Turn Coordinator
-		#------------------------------------------------------------------------------------------
-		self.turnCoordBallBackground = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [300,300],	[300*4			,2048-300		])
-		self.turnCoordBall =			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [300,300],	[300*5			,2048-300		], "TC BALL")
-		self.turnCoordBackground = 		graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [300,300],	[300*4			,2048-300*2		])
-		self.turnCoordPlane = 			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [300,300],	[300*5			,2048-300*2		])
-		self.turnCoordBezel =			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [310,310],	[300*4			,2048-300*6-10	])
-		self.turnCoordBezel.resize([310*zoom,310*zoom])
+		self.sliderBase = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-30		])
+		self.centerGrad  = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-61		])
+		self.tensGrads = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-91		])
 		
-		self.turnCoordPlane.enableRotation (XPlaneDataDispatcher,(17,3),[ [-9,-60],[-3,-20],[0,0],[3,20],[9,60]],conversionFunctions.calculateTurnRate)
-		self.turnCoordBall.enableRotation (XPlaneDataDispatcher,(18,7),[ [-7,-15],[0,0],[7,15]])
-		#self.turnCoordBall.setRotationCenter((0,671))
-		self.turnCoordBall.setRotationCenter((0,300*zoom))
+		self.sliderPointer = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-121		])
 		
-		self.addItem(self.turnCoordBallBackground)
-		self.addItem(self.turnCoordBall)
-		self.addItem(self.turnCoordBackground)
-		self.addItem(self.turnCoordPlane)
-		self.addItem(self.turnCoordBezel, [0,0], False)
+		self.addItem(self.sliderBase)
+		self.addItem(self.centerGrad)
+		self.addItem(self.tensGrads)
+		self.addItem(self.sliderPointer)
 
 		
 	def draw(self):
