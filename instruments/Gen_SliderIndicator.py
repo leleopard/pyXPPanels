@@ -28,7 +28,19 @@ class Gen_SliderIndicator(graphics.Container):
 		self.addItem(self.centerGrad)
 		self.addItem(self.tensGrads)
 		self.addItem(self.sliderPointer)
-
+	
+	## set if the center graduation of the slider is visible or not
+	# @param visible boolean True or False
+	#
+	def setCenterGradVisible(self, visible):
+		self.centerGrad.setVisible(visible)
+	
+	## set if the tens graduations of the slider are visible or not
+	# @param visible boolean True or False
+	#
+	def setTensGradsVisible(self, visible):
+		self.tensGrads.setVisible(visible)
+		
 		
 	def draw(self):
 		

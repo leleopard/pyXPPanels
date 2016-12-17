@@ -64,8 +64,8 @@ class ArduinoSerial(threading.Thread):
 			bytesToRead = self.serialConnection.in_waiting
 			if (bytesToRead>0):
 				data = self.serialConnection.read(bytesToRead)		
-				#print("Arduino data: ", data, "data length", len(data))
-				buffer += data
+				print("Arduino data: ", data, "data length", len(data))
+				buffer += data.decode(encoding = 'latin_1')
 				#print("buffer: ", buffer)
 				
 				commands = buffer.split('\13\10')

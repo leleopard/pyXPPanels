@@ -81,7 +81,7 @@ class XPlaneUDPServer(threading.Thread):
 		msg = 'CMND0'
 		msg += command
 
-		self.sendSock.sendto(msg, self.XPAddress)
+		self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
 		
 		for callback in self.XPCmd_Callback_Functions:
 			callback(command)
@@ -96,7 +96,7 @@ class XPlaneUDPServer(threading.Thread):
 		msg = 'DREF0'+dataref
 		msg += ' '*nr_trailing_spaces
 		if len(msg) == 509:
-			self.sendSock.sendto(msg, self.XPAddress)
+			self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
 	
 	## registers a callback function to be called if the class receives a sendXPCmd() call
 	# @param callback - the callback function, it will be given the command string as parameter so your callback must handle the command string
