@@ -125,6 +125,7 @@ class pyGaugesPanel():
 		glfw.glfwWindowHint(glfw.GLFW_CONTEXT_VERSION_MINOR, 2)
 		glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);
 		glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE, glfw.GLFW_OPENGL_CORE_PROFILE)
+		glfw.glfwWindowHint(glfw.GLFW_AUTO_ICONIFY, gl.GL_FALSE)
 		
 		logging.info("testing monitor")
 		monitors = None
