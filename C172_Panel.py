@@ -144,7 +144,7 @@ XPlaneDataServer.requestXPDref(306, "sim/cockpit2/gauges/actuators/artificial_ho
 XPlaneDataServer.requestXPDref(307, "sim/cockpit2/gauges/indicators/turn_rate_roll_deg_pilot[0]")
 XPlaneDataServer.requestXPDref(308, "sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot[0]")
 XPlaneDataServer.requestXPDref(309, "sim/cockpit2/gauges/indicators/compass_heading_deg_mag[0]")
-
+XPlaneDataServer.requestXPDref(321, "sim/cockpit2/controls/elevator_trim[0]")
 
 batchImageRenderer = OpenGL3lib.GL_BatchImageRenderer(10) # create a batch renderer with 10 layers
 
@@ -170,7 +170,7 @@ RPM = 				C172_RPM_Indicator.C172_RPM_Indicator			(RPM_pos,			(280,280)			  , XP
 Compass = 			GenCompass.GenCompass							(Compass_pos,		(120,66)			  , XPlaneDataServer, batchImageRenderer, compassTexture)
 
 PitchTrimSlider = 	Gen_SliderIndicator.Gen_SliderIndicator			((1350,500),		(100,30), 				XPlaneDataServer, batchImageRenderer, sliderTexture)
-
+PitchTrimSlider.setPointerDataref((321,0))
 
 #airportPlatesBrowser = AirportPlatesBrowser.AirportPlatesBrowser([1000,testGaugesPanel.frameBufferHeight-950], [570,840], testGaugesPanel, batchImageRenderer)
 

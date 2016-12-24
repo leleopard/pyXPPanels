@@ -17,6 +17,7 @@ class Gen_SliderIndicator(graphics.Container):
 		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = layer
+		self.zoom = zoom
 		
 		self.sliderBase = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-30		])
 		self.centerGrad  = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-61		])
@@ -40,6 +41,16 @@ class Gen_SliderIndicator(graphics.Container):
 	#
 	def setTensGradsVisible(self, visible):
 		self.tensGrads.setVisible(visible)
+	
+	## sets which dataref value the pointer tracks, and position depending on value
+	# @param tuple pointerDataref: ID, and index (0..7) of the value tracked
+	# @param dataConversionTable: 
+	#
+	def setPointerDataref(self, pointerDatarefID, dataConversionTable = [ [-1.0,-1.0],[1.0,1.0]] ):
+		for i in range(0, len(dataConversionTable)):
+			dataConversionTable[i][1] = dataConversionTable[i][1] * 50 * self.zoom
+			
+		self.sliderPointer.enableTranslation (self.XPlaneDataDispatcher,pointerDatarefID,dataConversionTable, False, 90)
 		
 		
 	def draw(self):
