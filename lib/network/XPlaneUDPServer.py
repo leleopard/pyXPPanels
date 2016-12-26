@@ -118,14 +118,14 @@ class XPlaneUDPServer(threading.Thread):
 		msg = "RREF"+'\0'
 		packedindex = pack('<i', index)
 		packedfrequency = pack('<i', 30)
-		msg += packedfrequency.decode(encoding = 'ascii')
-		msg += packedindex.decode(encoding = 'ascii')
+		msg += packedfrequency.decode(encoding = 'latin_1')
+		msg += packedindex.decode(encoding = 'latin_1')
 		msg += dataref
 		msg += ' '*nr_trailing_spaces
 		
 		logging.debug("Requesting DataRef, RREF msg: %s", msg)
 		
-		RREF_Sock.sendto(msg.encode('ascii'), self.XPAddress)
+		RREF_Sock.sendto(msg.encode('latin_1'), self.XPAddress)
 		RREF_Sock.setblocking(0)
 		
 	
