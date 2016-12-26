@@ -1,5 +1,6 @@
 import logging
 import decimal
+import math
 D = decimal.Decimal
 
 from lib.graphics import OpenGL3lib
@@ -22,6 +23,9 @@ class Gen_SliderIndicator(graphics.Container):
 		self.sliderBase = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-30		])
 		self.centerGrad  = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-61		])
 		self.tensGrads = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-91		])
+		
+		self.sliderBase.rotate(math.radians(180))
+		#self.sliderBase.rotate(math.radians(90))
 		
 		self.sliderPointer = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-121		])
 		
