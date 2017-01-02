@@ -24,8 +24,8 @@ class Gen_SliderIndicator(graphics.Container):
 		self.centerGrad  = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-61		])
 		self.tensGrads = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-91		])
 		
-		self.sliderBase.rotate(math.radians(180))
-		#self.sliderBase.rotate(math.radians(90))
+		self.sliderBase.rotateToAngle(90)
+		self.sliderBase.rotateToAngle(45)
 		
 		self.sliderPointer = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [101,30],	[0			,256-121		])
 		

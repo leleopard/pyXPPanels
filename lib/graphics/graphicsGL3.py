@@ -527,11 +527,13 @@ class ImagePanel(Panel):
 		self.text_rot_angle = math.radians(angle)
 		self.refreshTextRotation = True
 	
-	## rotate the Image panel by provided angle in radians - note the function will rotate the panel from its current angle + the angle provided.
-	# @param angle - angle to rotate in radians. Call ImagePanel.rotate(math.radians(90)) if you want to rotate by 90 degrees for example
+	## rotate the Image panel by provided angle in degrees - note the function will rotate the Image to the angle provided.
+	# @param angle - angle to rotate in degrees. Call ImagePanel.rotateToAngle(90) if you want to rotate to 90 degrees for example
 	#
-	def rotate(self,angle):
-		self.rot_angle = self.previous_rot_angle+angle
+	def rotateToAngle(self,angle):
+		self.previous_rot_angle = self.rot_angle
+		self.rot_angle = math.radians(angle)
+		
 		self.refreshRotation = True
 		
 	def zoomTexture(self, textZoom):

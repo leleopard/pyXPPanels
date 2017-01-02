@@ -13,5 +13,10 @@ __pycache__/
 
 ._*
 
+# ignore pyinstaller files and folders for now
+*.spec
+build/
+dist/
+
 #doc folder
 doc/
