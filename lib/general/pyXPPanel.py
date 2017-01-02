@@ -62,7 +62,7 @@ from lib.graphics import graphicsGL3
 from lib.graphics import fonts
 
 
-class pyGaugesPanel():
+class pyXPPanel():
 	width = 640
 	height = 480
 	fullscreen = False
