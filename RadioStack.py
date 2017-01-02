@@ -1,5 +1,5 @@
 # displays a Bendix King radio stack
-from lib.general.pyGaugesPanel import *
+from lib.general import pyXPPanel
 from lib.graphics import OpenGL3lib
 from lib.graphics import graphicsGL3
 from lib.graphics import fonts
@@ -25,9 +25,7 @@ def drawInstruments():
 #  there should be no need to change this section.
 #
 #********************************************************************************************
-RadioStack_Panel = pyGaugesPanel()
-RadioStack_Panel.initDisplay()
-RadioStack_Panel.initXPlaneDataServer()
+RadioStack_Panel = pyXPPanel.pyXPPanel()
 RadioStack_Panel.initArduinoSerialConnection()
 
 RadioStack_Panel.setDrawCallback(drawInstruments)

@@ -1,4 +1,4 @@
-from lib.general.pyGaugesPanel import *
+from lib.general import pyXPPanel
 from lib.graphics import OpenGL3lib
 from lib.graphics import graphicsGL3
 from lib.graphics import fonts
@@ -48,9 +48,7 @@ def drawInstruments():
 #  there should be no need to change this section.
 #
 #********************************************************************************************
-testGaugesPanel = pyGaugesPanel()
-testGaugesPanel.initDisplay()
-testGaugesPanel.initXPlaneDataServer()
+testGaugesPanel = pyXPPanel.pyXPPanel()
 
 testGaugesPanel.setDrawCallback(drawInstruments)
 
