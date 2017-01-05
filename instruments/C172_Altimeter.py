@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class C172_Altimeter(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, name = "C172_DirectionalGyro"):
+	def __init__(self,position, size, batchImageRenderer, texture, zoom = 1.0, name = "C172_DirectionalGyro"):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -34,11 +32,11 @@ class C172_Altimeter(graphics.Container):
 		self.altimeterBezel = 				graphics.ImagePanel(texture, batchImageRenderer,self.layer, [0,0], [310,310],	[300*4	,2048-300*6-10	])
 		self.altimeterBezel.resize([310*zoom,310*zoom])
 
-		self.altimeterMbWheel.enableRotation (XPlaneDataDispatcher,(7,0),[ [945,165.5],[1000,0.5],[1050,-149.5]],conversionFunctions.convertINtomb)
-		self.altimeterHgWheel.enableRotation (XPlaneDataDispatcher,(7,0),[ [28,154],[29.5,-0.5],[31.1,-165.1]])
-		self.altimeter100sNeedle.enableRotation (XPlaneDataDispatcher,(20,5),[ [0,0],[1.0,360]],conversionFunctions.return100s)
-		self.altimeter1kNeedle.enableRotation (XPlaneDataDispatcher,(20,5),[ [0,0],[1.0,360]],conversionFunctions.return1000s)
-		self.altimeter10kNeedle.enableRotation (XPlaneDataDispatcher,(20,5),[ [0,0],[1.0,360]],conversionFunctions.return10000s)
+		self.altimeterMbWheel.enableRotation ((7,0),[ [945,165.5],[1000,0.5],[1050,-149.5]],conversionFunctions.convertINtomb)
+		self.altimeterHgWheel.enableRotation ((7,0),[ [28,154],[29.5,-0.5],[31.1,-165.1]])
+		self.altimeter100sNeedle.enableRotation ((20,5),[ [0,0],[1.0,360]],conversionFunctions.return100s)
+		self.altimeter1kNeedle.enableRotation ((20,5),[ [0,0],[1.0,360]],conversionFunctions.return1000s)
+		self.altimeter10kNeedle.enableRotation ((20,5),[ [0,0],[1.0,360]],conversionFunctions.return10000s)
 
 		self.addItem(self.altimeterBlackBackground)
 		self.addItem(self.altimeterHgWheel)

@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class C172_ADF(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, name = "C172_ADF"):
+	def __init__(self,position, size, batchImageRenderer, texture, zoom = 1.0, name = "C172_ADF"):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -27,8 +25,8 @@ class C172_ADF(graphics.Container):
 		self.ADFBezel = 		graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [310,310],	[300*4		,2048-300*6-10	])
 		self.ADFBezel.resize([310*zoom,310*zoom])
 
-		self.ADFCompass.enableRotation (XPlaneDataDispatcher,(101,1),[ [-360,360],[360,-360]])
-		self.ADFNeedle.enableRotation (XPlaneDataDispatcher,(101,2),[ [-360,-360],[360,360]])
+		self.ADFCompass.enableRotation ((101,1),[ [-360,360],[360,-360]])
+		self.ADFNeedle.enableRotation ((101,2),[ [-360,-360],[360,360]])
 
 		self.addItem(self.ADFNeedle)
 		self.addItem(self.ADFCompass)

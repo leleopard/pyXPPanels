@@ -11,17 +11,12 @@ from lib.general import conversionFunctions
 
 
 class BK_NAVCOMM_KX165A(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, NAV_COMM_ID = 1, name = "BK_NAVCOMM_KX165A"):
+	def __init__(self,position, size, batchImageRenderer, texture, NAV_COMM_ID = 1, name = "BK_NAVCOMM_KX165A"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
 		self.NAV_COMM_ID = NAV_COMM_ID
-		
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
-		self.XPlaneDataDispatcher.requestXPDref(310, "sim/cockpit2/radios/actuators/com1_power[0]")
-		self.XPlaneDataDispatcher.requestXPDref(311, "sim/cockpit2/radios/actuators/com2_power[0]")
 		
 		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_com"+str(NAV_COMM_ID)+"_on")
 		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_nav"+str(NAV_COMM_ID)+"_on")
@@ -57,34 +52,34 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 		# COMM frequency ACTIVE text
 		self.COMM_Frequ_ACT_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.COMM_Frequ_ACT_Text.setTextFormat(TXT_FMT_3DIG_PREC3)
-		self.COMM_Frequ_ACT_Text.setTextDataSource(self.XPlaneDataDispatcher,(96,COMM_ACT_INDEX),conversionFunctions.divideby100)
+		self.COMM_Frequ_ACT_Text.setTextDataSource((96,COMM_ACT_INDEX),conversionFunctions.divideby100)
 		self.addItem(self.COMM_Frequ_ACT_Text, (9,y_frequencies), False)
 		
 		# COMM frequency STANDBY text
 		self.COMM_Frequ_STBY_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.COMM_Frequ_STBY_Text.setTextFormat(TXT_FMT_3DIG_PREC3)
-		self.COMM_Frequ_STBY_Text.setTextDataSource(self.XPlaneDataDispatcher,(96,COMM_STDBY_INDEX),conversionFunctions.divideby100)
+		self.COMM_Frequ_STBY_Text.setTextDataSource((96,COMM_STDBY_INDEX),conversionFunctions.divideby100)
 		self.addItem(self.COMM_Frequ_STBY_Text, (145,y_frequencies), False)
 		
 		# NAV frequency ACTIVE text
 		self.NAV_Frequ_ACT_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.NAV_Frequ_ACT_Text.setTextFormat(TXT_FMT_3DIG_PREC2)
-		self.NAV_Frequ_ACT_Text.setTextDataSource(self.XPlaneDataDispatcher,(97,NAV_ACT_INDEX),conversionFunctions.divideby100)
+		self.NAV_Frequ_ACT_Text.setTextDataSource((97,NAV_ACT_INDEX),conversionFunctions.divideby100)
 		self.addItem(self.NAV_Frequ_ACT_Text, (288,y_frequencies), False)
 		
 		# NAV frequency STANDBY text
 		self.NAV_Frequ_STBY_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.NAV_Frequ_STBY_Text.setTextFormat(TXT_FMT_3DIG_PREC2)
-		self.NAV_Frequ_STBY_Text.setTextDataSource(self.XPlaneDataDispatcher,(97,NAV_STDBY_INDEX),conversionFunctions.divideby100)
+		self.NAV_Frequ_STBY_Text.setTextDataSource((97,NAV_STDBY_INDEX),conversionFunctions.divideby100)
 		self.addItem(self.NAV_Frequ_STBY_Text, (408,y_frequencies), False)
 		
 		
 	def draw(self):
 		powered = 0.0
 		if self.NAV_COMM_ID == 1:
-			powered = self.XPlaneDataDispatcher.getData(310,0)
+			powered = XPlaneUDPServer.pyXPUDPServer.getData(310,0)
 		elif self.NAV_COMM_ID == 2:
-			powered = self.XPlaneDataDispatcher.getData(311,0)
+			powered = XPlaneUDPServer.pyXPUDPServer.getData(311,0)
 		
 		if powered == 1.0:
 			self.BK_NAVCOMM_KX165ABackground.setVisible(True)

@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class C172_VOR(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "C172_VOR", VOR_ID = "VOR1", zoom = 1.0):
+	def __init__(self,position, size, batchImageRenderer, texture, name = "C172_VOR", VOR_ID = "VOR1", zoom = 1.0):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -57,14 +55,14 @@ class C172_VOR(graphics.Container):
 		self.VORbezel = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [310,310],	[300*4	,2048-300*6-10	])
 		self.VORbezel.resize([310*zoom,310*zoom])
 
-		self.VORcompass.enableRotation (XPlaneDataDispatcher,VORcompassData,[ [-380,380],[360,-360]])
-		self.VORhneedle.enableTranslation (XPlaneDataDispatcher,VORhneedleData,[ [-2.5,65*zoom],[2.5,-65*zoom]])
-		self.VORvneedle.enableTranslation (XPlaneDataDispatcher,VORvneedleData,[ [-2.5,-65*zoom],[2.5,65*zoom]],False,90)
+		self.VORcompass.enableRotation (VORcompassData,[ [-380,380],[360,-360]])
+		self.VORhneedle.enableTranslation (VORhneedleData,[ [-2.5,65*zoom],[2.5,-65*zoom]])
+		self.VORvneedle.enableTranslation (VORvneedleData,[ [-2.5,-65*zoom],[2.5,65*zoom]],False,90)
 		
-		self.VORTOindicator.toggleVisibility(XPlaneDataDispatcher,VORTO_FR_NAVindicatorData, conversionFunctions.NAV_TO_Toggle)
-		self.VORFRindicator.toggleVisibility(XPlaneDataDispatcher,VORTO_FR_NAVindicatorData, conversionFunctions.NAV_FR_Toggle)
-		self.VORNAV1flag.toggleVisibility(XPlaneDataDispatcher,VORTO_FR_NAVindicatorData, conversionFunctions.NAV_FLG_Toggle)
-		self.VORGSflag.toggleVisibility(XPlaneDataDispatcher,VORGSflagData, conversionFunctions.NAV_GSFLG_Toggle)
+		self.VORTOindicator.toggleVisibility(VORTO_FR_NAVindicatorData, conversionFunctions.NAV_TO_Toggle)
+		self.VORFRindicator.toggleVisibility(VORTO_FR_NAVindicatorData, conversionFunctions.NAV_FR_Toggle)
+		self.VORNAV1flag.toggleVisibility(VORTO_FR_NAVindicatorData, conversionFunctions.NAV_FLG_Toggle)
+		self.VORGSflag.toggleVisibility(VORGSflagData, conversionFunctions.NAV_GSFLG_Toggle)
 
 		self.addItem(self.VORNAV1flag,		[22*zoom,51*zoom], 	False)
 		self.addItem(self.VORGSflag,		[-45*zoom,23*zoom], 	False)

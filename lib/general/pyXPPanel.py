@@ -116,6 +116,7 @@ class pyXPPanel():
 		self._loadConfigFile(CONFIG_FILE)
 		self._initDisplay() # initialise GLFW window and OpenGL context
 		self._initXPlaneDataServer() # initialise UDP connectivity to XPlane
+		
 
 	#*******************************************************************************************************
 	#
@@ -243,8 +244,9 @@ class pyXPPanel():
 	# the network options for XPlane (IP, port....) are defined in the config file
 	#
 	def _initXPlaneDataServer(self):
-		self.XPlaneDataServer = XPlaneUDPServer.XPlaneUDPServer((self.IP,self.Port), (self.XPlaneIP,self.XPlanePort))
-		self.XPlaneDataServer.start()
+		XPlaneUDPServer.pyXPUDPServer.initialiseUDP((self.IP,self.Port), (self.XPlaneIP,self.XPlanePort))
+		XPlaneUDPServer.pyXPUDPServer.start()
+		self.XPlaneDataServer = XPlaneUDPServer.pyXPUDPServer
 	
 	## Private callback for the GLFW text input event: Will call all user callbacks registered via the registerCharCallback() method - Internal method, do not call directly.
 	# the class registers this callback at construction time
@@ -410,6 +412,12 @@ class pyXPPanel():
 	def setDrawCallback(self, drawCallbackFunc):
 		self.drawCallbackFuncs.append(drawCallbackFunc)
 	
+	## Register a callback function to be executed each time the main loop redraws the screen. 
+	# @param drawCallbackFunc: user callback function.
+	# 
+	def addDrawable(self, drawCallbackFunc):
+		self.drawCallbackFuncs.append(drawCallbackFunc)
+	
 	
 	## Starts the main application loop, call once all initialisation is done.
 	# 
@@ -445,8 +453,7 @@ class pyXPPanel():
 			glfw.glfwPollEvents()
 		
 		logging.info("Bye")
-		if self.XPlaneDataServer != None:
-			self.XPlaneDataServer.quit()
+		XPlaneUDPServer.pyXPUDPServer.quit()
 		
 		if self.arduinoSerialConnection != None:
 			self.arduinoSerialConnection.quit()

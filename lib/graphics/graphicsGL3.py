@@ -12,7 +12,7 @@ from lib.glfw import glfw
 from lib.graphics import OpenGL3lib
 from lib.graphics import fonts
 from lib.network import XPlaneUDPServer
-#from lib.general import EventsManager
+
 
 ## @package Graphics module. Collection of high level graphics objects 
 
@@ -350,9 +350,7 @@ class TextBox(Container):
 		#super(TextBox,self).draw()
 		
 class InputTextField(Container):
-	hintList = None
-	possibleHints = []
-	hintListBackground = None
+	
 	
 	def __init__(self,position, size, pyGaugesPanel, fontName, fontSize, fontColor, name = "InputTextField"):
 		logging.info("init InputTextField %s ", name)
@@ -364,6 +362,10 @@ class InputTextField(Container):
 		self.setBackgroundColorSelected(OpenGL3lib.COLOR_BLUE)
 		self.textField = OpenGL3lib.GL_Font(fontName, fontSize, fontColor, True, 0)
 		self.textHintField = OpenGL3lib.GL_Font(fontName, fonts.FONT_SIZE_MED, fontColor, True, 0)
+		
+		self.hintList = None
+		self.possibleHints = []
+		self.hintListBackground = None
 		
 		self.text = ""
 		
@@ -413,17 +415,6 @@ class InputTextField(Container):
 			self.hintListBackground.draw(self.x,self.y+21)
 			self.textHintField.draw("Hint [Enter to accept]: "+self.possibleHints[0],self.x+2,self.y+22) 
 		
-		
-class ClippingPanel(Container):
-	
-	def draw(self):
-		glScissor(self.x, self.y, self.width, self.height)
-		glEnable(GL_SCISSOR_TEST)
-		
-		for image in self.itemList:
-			image.draw()
-		
-		glDisable(GL_SCISSOR_TEST)
 
 class ImagePanel(Panel):
 	image = None
@@ -437,19 +428,16 @@ class ImagePanel(Panel):
 	translating = False
 	translationAngle = None
 	
-	rotationXPdataSource = None
 	rotationXPdata = False
 	rotationCenter = None
 	textureRotationCenter = None
 	
 	translationXPdata = False
-	translationXPdataSource = None
 	
 	rotationConvertFunction = False
 	translationConvertFunction = False
 	
 	visibilityXPData = None
-	visibilityXPdataSource = None
 	visibilityToggleFunction = None
 	
 	refreshVisibility = True
@@ -460,13 +448,11 @@ class ImagePanel(Panel):
 	refreshTextZoom = True
 	textTranslating = False
 	textTranslationConvertFunction = None
-	textTranslationXPdataSource = None
 	textTranslationXPdata = None
 	textValueToMoveTable = None
 	
 	textRotating = False
 	textRotationConvertFunction = None
-	textRotationXPdataSource = None
 	textRotationXPdata = None
 	textValueToRotationTable = None
 	
@@ -496,6 +482,7 @@ class ImagePanel(Panel):
 		self.image = OpenGL3lib.GL_Image(texture,cliprect,origin)
 		Panel.__init__(self,position, (self.image.width,self.image.height), texture.name)
 		self.name = name
+		self.XPUDPServer = XPlaneUDPServer.pyXPUDPServer
 		batchImageRenderer.addImageToRenderQueue(self.image,layer)
 		self.image.draw((self.x,self.y),self.width,self.height,None,self.rot_angle, self.rotationCenter, (self.text_xdev, self.text_ydev),self.text_rot_angle,self.text_zoom)
 		
@@ -514,9 +501,6 @@ class ImagePanel(Panel):
 			self.refreshVisibility = True
 			self.visible = visible
 			self.image.visible = visible
-		#self.needRefresh = True
-		#self.image.draw((self.x,self.y),self.width,self.height,None,self.rot_angle, self.rotationCenter, (self.text_xdev, self.text_ydev),self.text_rot_angle,self.text_zoom)
-		#self.image.needRefresh = True
 	
 	def translateTexture(self, textXdev, textYdev):
 		self.text_xdev = textXdev
@@ -540,19 +524,17 @@ class ImagePanel(Panel):
 		self.text_zoom = textZoom
 		self.refreshTextZoom = True
 	
-	def enableTextureTranslation(self,XPdataSource,dataSourceKeyIndex, indValueToTranslationTable, translationConvertFunction = False):
+	def enableTextureTranslation(self,dataSourceKeyIndex, indValueToTranslationTable, translationConvertFunction = False):
 		self.textTranslating = True
 		self.textTranslationConvertFunction = translationConvertFunction
 		
-		self.textTranslationXPdataSource = XPdataSource
 		self.textTranslationXPdata = dataSourceKeyIndex
 		self.textValueToMoveTable = self.createFactorsTable(indValueToTranslationTable)
 	
-	def enableTextureRotation(self,XPdataSource,dataSourceKeyIndex, indValueToRotationTable, rotationConvertFunction = False):
+	def enableTextureRotation(self,dataSourceKeyIndex, indValueToRotationTable, rotationConvertFunction = False):
 		self.textRotating = True
 		self.textRotationConvertFunction = rotationConvertFunction
 		
-		self.textRotationXPdataSource = XPdataSource
 		self.textRotationXPdata = dataSourceKeyIndex
 		self.textValueToRotationTable = self.createFactorsTable(indValueToRotationTable)
 	
@@ -565,15 +547,13 @@ class ImagePanel(Panel):
 			self.width = self.image.width
 			self.height = self.image.height
 
-	def toggleVisibility(self,XPdataSource, dataSourceKeyIndex, visibilityToggleFunction = False):
+	def toggleVisibility(self, dataSourceKeyIndex, visibilityToggleFunction = False):
 		self.visibilityToggleFunction = visibilityToggleFunction
-		self.visibilityXPdataSource = XPdataSource
 		self.visibilityXPData = dataSourceKeyIndex
 		
-	def enableRotation(self,XPdataSource, dataSourceKeyIndex, indValueToAnglesTable, rotationConvertFunction = False):
+	def enableRotation(self, dataSourceKeyIndex, indValueToAnglesTable, rotationConvertFunction = False):
 		self.rotating = True
 		self.rotationConvertFunction = rotationConvertFunction
-		self.rotationXPdataSource = XPdataSource
 		self.rotationXPdata = dataSourceKeyIndex
 		self.valueToRotAnglesTable = self.createFactorsTable(indValueToAnglesTable)
 
@@ -583,14 +563,13 @@ class ImagePanel(Panel):
 	def setTextureRotationCenter(self,rotationCenter):
 		self.textureRotationCenter = rotationCenter
 	
-	def enableTranslation(self,XPdataSource,dataSourceKeyIndex, indValueToTranslationTable, translationConvertFunction = False,translationAngle=None,addAngleToRotation=None):
+	def enableTranslation(self,dataSourceKeyIndex, indValueToTranslationTable, translationConvertFunction = False,translationAngle=None,addAngleToRotation=None):
 		self.translating = True
 		self.translationConvertFunction = translationConvertFunction
 		if translationAngle:
 			self.translationAngle = translationAngle
 		if addAngleToRotation:
 			self.addRotAngleForTranslation = addAngleToRotation
-		self.translationXPdataSource = XPdataSource
 		self.translationXPdata = dataSourceKeyIndex
 		self.valueToMoveTable = self.createFactorsTable(indValueToTranslationTable)
 		
@@ -604,11 +583,11 @@ class ImagePanel(Panel):
 		if self.visibilityXPData:
 			
 			if self.testMode == False:
-				XPindicatedValue = float(self.visibilityXPdataSource.getData(self.visibilityXPData[0],self.visibilityXPData[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.visibilityXPData[0],self.visibilityXPData[1]))
 			else: 
 				XPindicatedValue = self.testValue
 				
-			self.image.visible = self.visibilityToggleFunction(XPindicatedValue,self.visibilityXPdataSource)
+			self.image.visible = self.visibilityToggleFunction(XPindicatedValue,self.XPUDPServer)
 			self.visible = self.image.visible
 			logging.debug("VisibilityXPdata: %s", self.image.visible)
 			needRefresh = True
@@ -621,12 +600,12 @@ class ImagePanel(Panel):
 		
 		if self.rotating == True:
 			if self.testMode == False:
-				XPindicatedValue = self.rotationXPdataSource.getData(self.rotationXPdata[0],self.rotationXPdata[1])
+				XPindicatedValue = self.XPUDPServer.getData(self.rotationXPdata[0],self.rotationXPdata[1])
 			else: 
 				XPindicatedValue = self.testValue
 			
 			if self.rotationConvertFunction != False :
-				XPindicatedValue = float(self.rotationConvertFunction(XPindicatedValue,self.rotationXPdataSource))
+				XPindicatedValue = float(self.rotationConvertFunction(XPindicatedValue,self.XPUDPServer))
 			
 			#print("XP Rotation value:", XPindicatedValue)
 			self.rot_angle = math.radians(self.convertValueToTransformValue(XPindicatedValue,self.valueToRotAnglesTable))
@@ -641,12 +620,12 @@ class ImagePanel(Panel):
 		
 		if self.translating == True:
 			if self.testMode == False:
-				XPindicatedValue = float(self.translationXPdataSource.getData(self.translationXPdata[0],self.translationXPdata[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.translationXPdata[0],self.translationXPdata[1]))
 			else: 
 				XPindicatedValue = self.testValue
 			
 			if self.translationConvertFunction != False :
-				XPindicatedValue = float(self.translationConvertFunction(XPindicatedValue,self.translationXPdataSource))
+				XPindicatedValue = float(self.translationConvertFunction(XPindicatedValue,self.XPUDPServer))
 			
 			translationAmount = self.convertValueToTransformValue(XPindicatedValue,self.valueToMoveTable)
 			#print self.image_name," XP indicated value: ",XPindicatedValue, " transl amount = ", translationAmount
@@ -667,24 +646,24 @@ class ImagePanel(Panel):
 		
 		if self.textRotating == True:
 			if self.testMode == False:
-				XPindicatedValue = float(self.textRotationXPdataSource.getData(self.textRotationXPdata[0],self.textRotationXPdata[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.textRotationXPdata[0],self.textRotationXPdata[1]))
 			else: 
 				XPindicatedValue = self.testValue
 			
 			if self.textRotationConvertFunction != False :
-				XPindicatedValue = float(self.textRotationConvertFunction(XPindicatedValue,self.textRotationXPdataSource))
+				XPindicatedValue = float(self.textRotationConvertFunction(XPindicatedValue,self.XPUDPServer))
 			#logging.debug("text rotation, XP value = %s", XPindicatedValue)
 			self.text_rot_angle = math.radians(self.convertValueToTransformValue(XPindicatedValue,self.textValueToRotationTable))
 			#logging.debug("text rotation, XP value = %s, rot angle rad = %s", XPindicatedValue, self.text_rot_angle)
 		
 		if self.textTranslating == True:
 			if self.testMode == False:
-				XPindicatedValue = float(self.textTranslationXPdataSource.getData(self.textTranslationXPdata[0],self.textTranslationXPdata[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.textTranslationXPdata[0],self.textTranslationXPdata[1]))
 			else: 
 				XPindicatedValue = self.testValue
 			
 			if self.textTranslationConvertFunction != False :
-				XPindicatedValue = float(self.textTranslationConvertFunction(XPindicatedValue,self.textTranslationXPdataSource))
+				XPindicatedValue = float(self.textTranslationConvertFunction(XPindicatedValue,self.XPUDPServer))
 			
 			translationAmount = self.convertValueToTransformValue(XPindicatedValue,self.textValueToMoveTable)
 			#print ("Texture translation", self.name," XP indicated value: ",XPindicatedValue, " text transl amount = ", translationAmount)
@@ -782,16 +761,16 @@ class ImagePanel(Panel):
 		
 
 class TextField(Container):
-	text = ""
-	textDataSource = None
-	textDataSourceKeyIndex = None
-	textFormat = '{:.1f}'
-	unitText = ""
-	prefixUnit = False
-	dataConvertFunction = False
 	
 	def __init__(self, font):
 		self.image = font
+		self.text = ""
+		self.XPUDPServer = XPlaneUDPServer.pyXPUDPServer
+		self.textDataSourceKeyIndex = None
+		self.textFormat = '{:.1f}'
+		self.unitText = ""
+		self.prefixUnit = False
+		self.dataConvertFunction = False
 	
 	## Sets the text to be displayed (static value). Note this will have no effect if you have set the TextField instance to display an XPlane value with the setTextDataSource method. 
 	# If you want to temporarily display a static text rather than the XPlane value, call setTextDataSource(None, None) first. You will need to call setTextDataSource() again to re enable the XPlane UDP value if required later on.
@@ -803,10 +782,6 @@ class TextField(Container):
 	def setVisible(self,visible):
 		self.visible = visible
 		self.image.visible = visible
-		#self.needRefresh = True
-		#self.image.draw((self.x,self.y),self.width,self.height)
-		#self.image.needRefresh = True
-
 	
 	def setPosition(self,coordinates):
 		self.x = coordinates[0]
@@ -814,12 +789,11 @@ class TextField(Container):
 		self.orig_x = coordinates[0]
 		self.orig_y = coordinates[1]
 		self.image.draw((self.x,self.y),self.width,self.height)
-		#self.image.draw((self.x,self.y),self.width,self.height,None,self.rot_angle, self.rotationCenter, (self.text_xdev, self.text_ydev),self.text_zoom)
+		
 		self.refreshPosition = True
 		self.image.needRefresh = True
 		
-	def setTextDataSource(self,XPdataSource,dataSourceKeyIndex, dataConvertFunction = False):
-		self.textDataSource = XPdataSource
+	def setTextDataSource(self, dataSourceKeyIndex, dataConvertFunction = False):
 		self.textDataSourceKeyIndex = dataSourceKeyIndex
 		self.dataConvertFunction = dataConvertFunction
 	
@@ -834,10 +808,10 @@ class TextField(Container):
 		if self.visible == True:
 			
 			XPValue = 0
-			if self.textDataSource != None:
-				XPValue = self.textDataSource.getData(self.textDataSourceKeyIndex[0],self.textDataSourceKeyIndex[1])
+			if self.XPUDPServer != None:
+				XPValue = self.XPUDPServer.getData(self.textDataSourceKeyIndex[0],self.textDataSourceKeyIndex[1])
 				if self.dataConvertFunction != False:
-					XPValue = float(self.dataConvertFunction(XPValue,self.textDataSource))
+					XPValue = float(self.dataConvertFunction(XPValue,self.XPUDPServer))
 				
 				self.text =  self.textFormat.format(float(XPValue))
 				self.text += self.unitText
@@ -846,41 +820,6 @@ class TextField(Container):
 			self.image.draw(self.text,self.x,self.y)
 
 
-			
-class NumberTextField10kraised(ImagePanel):
-	number = 0
-	
-	def __init__(self, font10k, font10s, fontSize10y_adjust):
-		self.font10k = font10k
-		self.font10s = font10s
-		self.fontSize10y_adjust = fontSize10y_adjust
-	
-	def setNumber(self,number):
-		self.number = number
-		
-	def draw(self):
-		number10k = D(self.number)//D(1000)
-		number100s = abs((D(self.number)/D(1000)%1)*1000)
-		#number100s = float('{:3.0f}'.format((abs(self.number/1000)%1)*1000))
-		
-		font10s_x = self.x
-		lw = self.font10k.lw
-		
-		if number10k != 0:
-			self.font10k.draw('{:.0f}'.format(number10k),self.x,self.y)
-			font10s_x += lw
-		if (self.number <0) and (self.number > -1000):
-			self.font10s.draw("-",font10s_x,self.y+self.fontSize10y_adjust)
-			font10s_x += lw
-		if (self.number <=-1000):
-			font10s_x += lw
-		if abs(number10k) >= 10:
-			font10s_x += lw
-			
-		if number100s == 0 or number100s == 500:
-			self.font10k.draw('{:0>3.0f}'.format(number100s),font10s_x,self.y)
-		else:
-			self.font10s.draw('{:0>3.0f}'.format(number100s),font10s_x,self.y+self.fontSize10y_adjust)
 
 class AnimatedImage(ImagePanel):
 	def __init__(self, imageDir, imageBaseName, startStepNumber, endStepNumber, imageNameSuffix, indexPadding,  position=[0,0], cliprect=None, origin=None, testMode=False):

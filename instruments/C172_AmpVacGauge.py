@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class C172_AmpVacGauge(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "C172_AmpVacGauge"):
+	def __init__(self,position, size, batchImageRenderer, texture, name = "C172_AmpVacGauge"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -25,11 +23,11 @@ class C172_AmpVacGauge(graphics.Container):
 		
 		self.vacAmpGaugeRightNeedle = 		graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [110,18],	[300*6		,2048-200*3-36	])
 		self.vacAmpGaugeRightNeedle.resize([110,18])
-		self.vacAmpGaugeRightNeedle.enableRotation (XPlaneDataDispatcher,(53,0),[ [-66,-59],[0,0],[66,57]])
+		self.vacAmpGaugeRightNeedle.enableRotation ((53,0),[ [-66,-59],[0,0],[66,57]])
 		
 		self.vacAmpGaugeLeftNeedle = 		graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [110,18],	[300*6		,2048-200*3-18	])
 		self.vacAmpGaugeLeftNeedle.resize([110,18])
-		self.vacAmpGaugeLeftNeedle.enableRotation (XPlaneDataDispatcher,(7,2),[ [2.8,57],[3,52],[4,26],[5,0],[6,-25],[7,-50],[7.2,-55]],conversionFunctions.convertSuction)
+		self.vacAmpGaugeLeftNeedle.enableRotation ((7,2),[ [2.8,57],[3,52],[4,26],[5,0],[6,-25],[7,-50],[7.2,-55]],conversionFunctions.convertSuction)
 		
 		self.vacAmpGaugeBorder = 			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [200,200],	[300*6		,2048-200*3		])
 		self.vacAmpGaugeText = 				graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [200,200],	[300*6		,2048-200*10	])

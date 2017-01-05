@@ -29,21 +29,18 @@ class XPlaneUDPServer(threading.Thread):
 	## constructor 
 	# @param Address: tuple of IP address, UDP port we are listening on
 	#
-	def __init__(self, Address, XPAddress = None):
+	def __init__(self):
 		threading.Thread.__init__(self)
 		self.running = True
-		logging.info("Initialising XPlaneUDPServer on address: %s", Address)
+		
 		# socket listening to XPlane Data
-		self.XplaneRCVsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.XplaneRCVsock.setblocking(0)
-		self.XplaneRCVsock.bind(Address) # bind this socket to listen to traffic from XPlane on the address passed to the constructor
-	
+		self.XplaneRCVsock = None
 		self.forwardXPDataAddresses = [] # default the forward addresses to empty list
 		self.XPCmd_Callback_Functions = [] # list of callback functions to be called when the class is asked to send a command to XPlane
 		
 		self.RDRCT_TRAFFIC = False # by default we do not redirect incoming traffic to Xplane
 		self.DataRCVsock = False 
-		self.XPAddress = XPAddress
+		self.XPAddress = None
 						
 		# socket to send data
 		self.sendSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -55,6 +52,19 @@ class XPlaneUDPServer(threading.Thread):
 		for i in range(0,1024) :
 			self.dataList.append([0,0,0,0,0,0,0,0]) # initialise the dataList with 0 values
 
+	## Initialise the UDP sockets to communicate with XPlane
+	# @param Address: tuple of IP address, UDP port we are listening on
+	# @param XPAddress: tuple of IP address, UDP port for XPlane
+	#
+	def initialiseUDP(self, Address, XPAddress = None):
+		logging.info("Initialising XPlaneUDPServer on address: %s", Address)
+		# socket listening to XPlane Data
+		self.XplaneRCVsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		self.XplaneRCVsock.setblocking(0)
+		self.XplaneRCVsock.bind(Address) # bind this socket to listen to traffic from XPlane on the address passed to the constructor
+		self.XPAddress = XPAddress
+		
+		
 	## Enables the forwarding of data received from XPLane to a list of IP addresses
 	# @param forwardAddresses: a list of addresses to forward to, in the format [(IP1,port1),(IP2,port2), ... ]
 	#
@@ -66,38 +76,51 @@ class XPlaneUDPServer(threading.Thread):
 	# @param index: the index in the data group
 	#
 	def getData(self,key,index):
-		return self.dataList[key][index]
+		if key >= 0 and key <1024:
+			return self.dataList[key][index]
+		else:
+			return 0
 	
 	## Prints data to the console for the key, index provided. 
 	# @param key: The XPlane data group ID
 	# 
 	def printData(self,key):
-		print ("Data Group: ", key, " [",self.dataList[key][0],",",self.dataList[key][1],",",self.dataList[key][2],",",self.dataList[key][3],",",self.dataList[key][4],",",self.dataList[key][5],",",self.dataList[key][6],",",self.dataList[key][7],"]")
-	
+		if key >= 0 and key <1024:
+			print ("Data Group: ", key, " [",self.dataList[key][0],",",self.dataList[key][1],",",self.dataList[key][2],",",self.dataList[key][3],",",self.dataList[key][4],",",self.dataList[key][5],",",self.dataList[key][6],",",self.dataList[key][7],"]")
+		else:
+			logging.error ( "Invalid key")
+			
 	## send command to XPlane
 	# @param string for the command to be sent to XPlane - refer to the XPlane doc for a list of available commands
 	#
 	def sendXPCmd(self, command):
-		msg = 'CMND0'
-		msg += command
+		if self.XPAddress is not None:
+			msg = 'CMND0'
+			msg += command
 
-		self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
-		
-		for callback in self.XPCmd_Callback_Functions:
-			callback(command)
+			self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
+			
+			for callback in self.XPCmd_Callback_Functions:
+				callback(command)
+		else:
+			logging.error("XPlane IP address undefined")
+			
 	
 	## send Dataref to XPlane
 	# @param string for the dataref to be sent to XPlane - refer to the XPlane doc for a list of available datarefs
 	# format of dataref string should be 4 bytes (chars) for the value to set, followed by the dataref path, then by a null character. The function will automatically pad white spaces to the length XPlane expects
 	#
 	def sendXPDref(self, dataref):
-		nr_trailing_spaces = 504-len(dataref)
+		if self.XPAddress is not None:
+			nr_trailing_spaces = 504-len(dataref)
+			
+			msg = 'DREF0'+dataref
+			msg += ' '*nr_trailing_spaces
+			if len(msg) == 509:
+				self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
+		else:
+			logging.error("XPlane IP address undefined")
 		
-		msg = 'DREF0'+dataref
-		msg += ' '*nr_trailing_spaces
-		if len(msg) == 509:
-			self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
-	
 	## registers a callback function to be called if the class receives a sendXPCmd() call
 	# @param callback - the callback function, it will be given the command string as parameter so your callback must handle the command string
 	#
@@ -109,25 +132,27 @@ class XPlaneUDPServer(threading.Thread):
 	# @param string for the dataref to be requested from XPlane - refer to the XPlane doc for a list of available datarefs
 	#
 	def requestXPDref(self, index, dataref):
-		RREF_Sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.RREF_sockets.append(RREF_Sock)
-		
-		dataref+= '\0'
-		nr_trailing_spaces = 400-len(dataref)
-		
-		msg = "RREF"+'\0'
-		packedindex = pack('<i', index)
-		packedfrequency = pack('<i', 30)
-		msg += packedfrequency.decode(encoding = 'latin_1')
-		msg += packedindex.decode(encoding = 'latin_1')
-		msg += dataref
-		msg += ' '*nr_trailing_spaces
-		
-		logging.debug("Requesting DataRef, RREF msg: %s", msg)
-		
-		RREF_Sock.sendto(msg.encode('latin_1'), self.XPAddress)
-		RREF_Sock.setblocking(0)
-		
+		if self.XPAddress is not None:
+			RREF_Sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			self.RREF_sockets.append(RREF_Sock)
+			
+			dataref+= '\0'
+			nr_trailing_spaces = 400-len(dataref)
+			
+			msg = "RREF"+'\0'
+			packedindex = pack('<i', index)
+			packedfrequency = pack('<i', 30)
+			msg += packedfrequency.decode(encoding = 'latin_1')
+			msg += packedindex.decode(encoding = 'latin_1')
+			msg += dataref
+			msg += ' '*nr_trailing_spaces
+			
+			logging.debug("Requesting DataRef, RREF msg: %s", msg)
+			
+			RREF_Sock.sendto(msg.encode('latin_1'), self.XPAddress)
+			RREF_Sock.setblocking(0)
+		else:
+			logging.error("XPlane IP address undefined")
 	
 	## Enables the redirection of traffic received by the class to XPlane
 	# @param myAddress: The address the class is listening for traffic on. Format: (IP,port)
@@ -256,5 +281,6 @@ class XPlaneUDPServer(threading.Thread):
 			
 		#logging.debug ("DATA Index: "+ str(index)+ "Value1: "+ str(value1)+ "Value2: "+ str(value2)+ "Value3: " + str(value3)+ "Value4: "+ str(value4))
 	
-		
-	
+pyXPUDPServer = XPlaneUDPServer()
+
+

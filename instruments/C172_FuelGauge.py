@@ -9,13 +9,11 @@ from lib.general import conversionFunctions
 
 
 class C172_FuelGauge(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "C172_FuelGauge"):
+	def __init__(self,position, size,  batchImageRenderer, texture, name = "C172_FuelGauge"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -23,10 +21,10 @@ class C172_FuelGauge(graphics.Container):
 		
 		self.fuelGaugeRightNeedle = 	graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [110,18],	[300*6		,2048-200*3-36		])
 		self.fuelGaugeRightNeedle.resize([110,18])
-		self.fuelGaugeRightNeedle.enableRotation (self.XPlaneDataDispatcher,(62,1),[ [-1.74,-66],[20,34],[28.08,65]],conversionFunctions.convertLbsToGallons)
+		self.fuelGaugeRightNeedle.enableRotation ((62,1),[ [-1.74,-66],[20,34],[28.08,65]],conversionFunctions.convertLbsToGallons)
 		self.fuelGaugeLeftNeedle = 		graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [110,18],	[300*6		,2048-200*3-18		])
 		self.fuelGaugeLeftNeedle.resize([110,18])
-		self.fuelGaugeLeftNeedle.enableRotation (self.XPlaneDataDispatcher,(62,0),[ [-1.74,62],[20,-33],[28.08,-64] ],conversionFunctions.convertLbsToGallons)
+		self.fuelGaugeLeftNeedle.enableRotation ((62,0),[ [-1.74,62],[20,-33],[28.08,-64] ],conversionFunctions.convertLbsToGallons)
 		self.fuelGaugeBorder = 			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [200,200],	[300*6		,2048-200*3		])
 		self.fuelGaugeText =			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [200,200],	[300*6		,2048-200*2		])
 		self.fuelGaugeBezel =			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [310,310],	[300*4		,2048-300*6-10	])

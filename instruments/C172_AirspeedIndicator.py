@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class C172_AirspeedIndicator(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, name = "C172_AirspeedIndicator"):
+	def __init__(self,position, size, batchImageRenderer, texture, zoom = 1.0, name = "C172_AirspeedIndicator"):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -27,7 +25,7 @@ class C172_AirspeedIndicator(graphics.Container):
 		self.airspeedBezel = 		graphics.ImagePanel(texture, batchImageRenderer,self.layer, [0,0], [310,310],	[300*4	,2048-300*6-10	])
 		self.airspeedBezel.resize([310*zoom,310*zoom])
 
-		self.airspeedNeedle.enableRotation(XPlaneDataDispatcher,(3,0), [ [0,0],
+		self.airspeedNeedle.enableRotation((3,0), [ [0,0],
 			[40,30],
 			[50,50],
 			[60,70],

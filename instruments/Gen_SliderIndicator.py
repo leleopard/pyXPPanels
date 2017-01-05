@@ -9,13 +9,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class Gen_SliderIndicator(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, layer = 0, name = "Gen_SliderIndicator"):
+	def __init__(self,position, size, batchImageRenderer, texture, zoom = 1.0, layer = 0, name = "Gen_SliderIndicator"):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = layer
 		self.zoom = zoom
@@ -54,7 +52,7 @@ class Gen_SliderIndicator(graphics.Container):
 		for i in range(0, len(dataConversionTable)):
 			dataConversionTable[i][1] = dataConversionTable[i][1] * 50 * self.zoom
 			
-		self.sliderPointer.enableTranslation (self.XPlaneDataDispatcher,pointerDatarefID,dataConversionTable, False, 90)
+		self.sliderPointer.enableTranslation (pointerDatarefID,dataConversionTable, False, 90)
 		
 		
 	def draw(self):

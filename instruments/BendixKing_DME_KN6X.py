@@ -11,14 +11,11 @@ from lib.general import conversionFunctions
 
 
 class BK_DME_KN6X(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "BK_NAVCOMM_KX165A"):
+	def __init__(self,position, size, batchImageRenderer, texture, name = "BK_NAVCOMM_KX165A"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
-		self.XPlaneDataDispatcher.requestXPDref(312, "sim/cockpit2/radios/actuators/dme_power[0]")
 		
 		self.layer = 1
 		
@@ -39,19 +36,19 @@ class BK_DME_KN6X(graphics.Container):
 		# DME Distance text
 		self.DME_DIST_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.DME_DIST_Text.setTextFormat('{:05.1f}')
-		self.DME_DIST_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,3))
+		self.DME_DIST_Text.setTextDataSource((102,3))
 		self.addItem(self.DME_DIST_Text, (x_DME_txt,y_frequencies), False)
 		
 		# DME Speed text
 		self.DME_SPEED_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.DME_SPEED_Text.setTextFormat('{:03.0f}')
-		self.DME_SPEED_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,4))
+		self.DME_SPEED_Text.setTextDataSource((102,4))
 		self.addItem(self.DME_SPEED_Text, (x_DME_speed,y_frequencies), False)
 		
 		# DME time text
 		self.DME_TIME_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.DME_TIME_Text.setTextFormat('{:03.0f}')
-		self.DME_TIME_Text.setTextDataSource(self.XPlaneDataDispatcher,(102,5))
+		self.DME_TIME_Text.setTextDataSource((102,5))
 		self.addItem(self.DME_TIME_Text, (x_DME_time,y_frequencies), False)
 		
 		# DME NAV1 indicator
@@ -67,10 +64,10 @@ class BK_DME_KN6X(graphics.Container):
 		self.addItem(self.DME_NAV2_Indicator, (x_DME_txt+135,y_frequencies+20), False)
 		
 	def draw(self):
-		powered = self.XPlaneDataDispatcher.getData(312,0)
+		powered = XPlaneUDPServer.pyXPUDPServer.getData(312,0)
 		if powered ==1.0 :
 			self.setVisible(True)
-			DME_found = self.XPlaneDataDispatcher.getData(102,2)
+			DME_found = XPlaneUDPServer.pyXPUDPServer.getData(102,2)
 			if DME_found == 0.0:
 				self.DME_DIST_Text.setVisible(False)
 				self.DME_SPEED_Text.setVisible(False)
@@ -80,7 +77,7 @@ class BK_DME_KN6X(graphics.Container):
 				self.DME_SPEED_Text.setVisible(True)
 				self.DME_TIME_Text.setVisible(True)
 			
-			ACT_DME = self.XPlaneDataDispatcher.getData(102,0)
+			ACT_DME = XPlaneUDPServer.pyXPUDPServer.getData(102,0)
 			
 			if ACT_DME == 0.0:
 				self.DME_NAV1_Indicator.setVisible(True)

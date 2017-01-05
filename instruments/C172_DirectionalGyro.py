@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class C172_DirectionalGyro(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, zoom = 1.0, name = "C172_DirectionalGyro"):
+	def __init__(self,position, size, batchImageRenderer, texture, zoom = 1.0, name = "C172_DirectionalGyro"):
 		graphics.Container.__init__(self,position, (size[0]*zoom, size[1]*zoom), name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -27,8 +25,8 @@ class C172_DirectionalGyro(graphics.Container):
 		self.dirGyroBezel =  		graphics.ImagePanel(texture, batchImageRenderer,self.layer, [0,0], [310,310],	[300*4	,2048-300*6-10	])
 		self.dirGyroBezel.resize([310*zoom,310*zoom])
 		
-		self.dirGyroBackground.enableRotation (XPlaneDataDispatcher,(308,0),[[0,0],[160,-160],[210,-211],[360,-360]])
-		self.dirGyroBug.enableRotation (XPlaneDataDispatcher,(118,1),[ [0,0],[160,160],[210,211],[360,360]], conversionFunctions.addCompassHeadingToValue)
+		self.dirGyroBackground.enableRotation ((308,0),[[0,0],[160,-160],[210,-211],[360,-360]])
+		self.dirGyroBug.enableRotation ((118,1),[ [0,0],[160,160],[210,211],[360,360]], conversionFunctions.addCompassHeadingToValue)
 
 		self.addItem(self.dirGyroBackground)
 		self.addItem(self.dirGyroBug)

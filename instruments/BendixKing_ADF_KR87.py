@@ -11,20 +11,13 @@ from lib.general import conversionFunctions
 
 
 class BK_ADF_KR87(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "BK_ADF_KR87"):
+	def __init__(self,position, size, batchImageRenderer, texture, name = "BK_ADF_KR87"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
-		self.XPlaneDataDispatcher.requestXPDref(313, "sim/cockpit/radios/adf1_stdby_freq_hz[0]")
-		self.XPlaneDataDispatcher.requestXPDref(314, "sim/cockpit2/radios/actuators/adf1_power[0]")
-		self.XPlaneDataDispatcher.requestXPDref(315, "sim/time/total_flight_time_sec[0]")
-		self.XPlaneDataDispatcher.requestXPDref(316, "sim/cockpit2/clock_timer/elapsed_time_minutes[0]")
-		self.XPlaneDataDispatcher.requestXPDref(317, "sim/cockpit2/clock_timer/elapsed_time_seconds[0]")
 		
-		self.XPlaneDataDispatcher.registerXPCmdCallback(self.XPCmdCallback)
+		XPlaneUDPServer.pyXPUDPServer.registerXPCmdCallback(self.XPCmdCallback)
 		
 		self.layer = 1
 		
@@ -54,13 +47,13 @@ class BK_ADF_KR87(graphics.Container):
 		# ADF Active Frequency text
 		self.ADF_ACT_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.ADF_ACT_FREQU_Text.setTextFormat('{:0>3.0f}')
-		self.ADF_ACT_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(101,0))
+		self.ADF_ACT_FREQU_Text.setTextDataSource((101,0))
 		self.addItem(self.ADF_ACT_FREQU_Text, (x_ADF_actFrequ,y_frequencies), False)
 		
 		# ADF standby Frequency text
 		self.ADF_SBY_FREQU_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.ADF_SBY_FREQU_Text.setTextFormat('{:0>3.0f}')
-		self.ADF_SBY_FREQU_Text.setTextDataSource(self.XPlaneDataDispatcher,(313,0))
+		self.ADF_SBY_FREQU_Text.setTextDataSource((313,0))
 		self.addItem(self.ADF_SBY_FREQU_Text, (x_ADF_sbyFrequ,y_frequencies), False)
 		
 		#-------------------------------------------------------------------------------------------------
@@ -69,25 +62,25 @@ class BK_ADF_KR87(graphics.Container):
 		# ADF flight timer hours text
 		self.ADF_FLT_TMR_HRS_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.ADF_FLT_TMR_HRS_Text.setTextFormat('{:0>2.0f}:')
-		self.ADF_FLT_TMR_HRS_Text.setTextDataSource(self.XPlaneDataDispatcher,(315,0),conversionFunctions.returnHours)
+		self.ADF_FLT_TMR_HRS_Text.setTextDataSource((315,0),conversionFunctions.returnHours)
 		self.addItem(self.ADF_FLT_TMR_HRS_Text, (x_time_left,y_frequencies), False)
 		
 		# ADF flight timer minutes text
 		self.ADF_FLT_TMR_MNS_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.ADF_FLT_TMR_MNS_Text.setTextFormat('{:0>2.0f}')
-		self.ADF_FLT_TMR_MNS_Text.setTextDataSource(self.XPlaneDataDispatcher,(315,0),conversionFunctions.returnMinutes)
+		self.ADF_FLT_TMR_MNS_Text.setTextDataSource((315,0),conversionFunctions.returnMinutes)
 		self.addItem(self.ADF_FLT_TMR_MNS_Text, (x_time_right,y_frequencies), False)
 				
 		# ADF elapsed timer minutes text
 		self.ADF_ET_TMR_MNS_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.ADF_ET_TMR_MNS_Text.setTextFormat('{:0>2.0f}:')  
-		self.ADF_ET_TMR_MNS_Text.setTextDataSource(self.XPlaneDataDispatcher,(316,0))
+		self.ADF_ET_TMR_MNS_Text.setTextDataSource((316,0))
 		self.addItem(self.ADF_ET_TMR_MNS_Text, (x_time_left,y_frequencies), False)
 		
 		# ADF elapsed timer seconds text
 		self.ADF_ET_TMR_SECS_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.ADF_ET_TMR_SECS_Text.setTextFormat('{:0>2.0f}')
-		self.ADF_ET_TMR_SECS_Text.setTextDataSource(self.XPlaneDataDispatcher,(317,0))
+		self.ADF_ET_TMR_SECS_Text.setTextDataSource((317,0))
 		self.addItem(self.ADF_ET_TMR_SECS_Text, (x_time_right,y_frequencies), False)
 		
 		#-------------------------------------------------------------------------------------------------
@@ -135,7 +128,7 @@ class BK_ADF_KR87(graphics.Container):
 		
 		
 	def draw(self):
-		powered = self.XPlaneDataDispatcher.getData(314,0)  # 0 = off, 1 = antenna, 2 = on, 3 = tone, 4 = test
+		powered = XPlaneUDPServer.pyXPUDPServer.getData(314,0)  # 0 = off, 1 = antenna, 2 = on, 3 = tone, 4 = test
 		if powered >= 1.0 :
 			self.ADF_BGD.setVisible(True)
 			self.ADF_ACT_FREQU_Text.setVisible(True)

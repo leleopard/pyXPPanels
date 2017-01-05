@@ -11,16 +11,11 @@ from lib.general import conversionFunctions
 
 
 class BK_XPDR_KT70(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "BK_XPDR_KT70"):
+	def __init__(self,position, size, batchImageRenderer, texture, name = "BK_XPDR_KT70"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
-		self.XPlaneDataDispatcher.requestXPDref(318, "sim/cockpit2/radios/actuators/transponder_code[0]")
-		self.XPlaneDataDispatcher.requestXPDref(319, "sim/cockpit2/radios/actuators/transponder_mode[0]")
-		self.XPlaneDataDispatcher.requestXPDref(320, "sim/cockpit/radios/transponder_light[0]")
 		
 		self.layer = 1
 		
@@ -43,7 +38,7 @@ class BK_XPDR_KT70(graphics.Container):
 		#-------------------------------------------------------------------------------------------------
 		self.XPDR_FL_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.XPDR_FL_Text.setTextFormat('{:0= 4.0f}')
-		self.XPDR_FL_Text.setTextDataSource(self.XPlaneDataDispatcher,(20,2), conversionFunctions.returnAltitude100sfeet)
+		self.XPDR_FL_Text.setTextDataSource((20,2), conversionFunctions.returnAltitude100sfeet)
 		self.addItem(self.XPDR_FL_Text, (x_flight_level,y_frequencies), False)
 		
 		#-------------------------------------------------------------------------------------------------
@@ -51,7 +46,7 @@ class BK_XPDR_KT70(graphics.Container):
 		#-------------------------------------------------------------------------------------------------
 		self.XPDR_CODE_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.XPDR_CODE_Text.setTextFormat('{:0>4.0f}')
-		self.XPDR_CODE_Text.setTextDataSource(self.XPlaneDataDispatcher,(318,0))
+		self.XPDR_CODE_Text.setTextDataSource((318,0))
 		self.addItem(self.XPDR_CODE_Text, (x_xpdr_code,y_frequencies), False)
 		
 		#-------------------------------------------------------------------------------------------------
@@ -89,12 +84,12 @@ class BK_XPDR_KT70(graphics.Container):
 
 
 	def draw(self):
-		transp_mode = self.XPlaneDataDispatcher.getData(319,0) # Transponder mode (off=0,stdby=1,on=2,test=3) ALT=4, GND=5
-		transp_light = self.XPlaneDataDispatcher.getData(320,0) # 1.0 = light lit, 0.0 not
+		transp_mode = XPlaneUDPServer.pyXPUDPServer.getData(319,0) # Transponder mode (off=0,stdby=1,on=2,test=3) ALT=4, GND=5
+		transp_light = XPlaneUDPServer.pyXPUDPServer.getData(320,0) # 1.0 = light lit, 0.0 not
 		if transp_mode >= 1.0:
 			if transp_mode != 3.0 : # if we are not in test mode, reset the flight level and code text fields to follow XP values. 
-				self.XPDR_FL_Text.setTextDataSource(self.XPlaneDataDispatcher,(20,2), conversionFunctions.returnAltitude100sfeet)
-				self.XPDR_CODE_Text.setTextDataSource(self.XPlaneDataDispatcher,(318,0))
+				self.XPDR_FL_Text.setTextDataSource((20,2), conversionFunctions.returnAltitude100sfeet)
+				self.XPDR_CODE_Text.setTextDataSource((318,0))
 			
 			if transp_mode == 1.0 : # Standby. 
 				self.XPDR_R_Indicator.setVisible(False)

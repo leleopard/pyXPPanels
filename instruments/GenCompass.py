@@ -8,13 +8,11 @@ from lib.network import XPlaneUDPServer
 from lib.general import conversionFunctions
 
 class GenCompass(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, name = "GenCompass"):
+	def __init__(self,position, size, batchImageRenderer, texture, name = "GenCompass"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.batchImageRenderer = batchImageRenderer
 		self.layer = 0
 		
@@ -26,8 +24,6 @@ class GenCompass(graphics.Container):
 		self.CompassRose = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [120,66],	[2	,2048-66	])
 		self.CompassRose.resize([120,66])
 		
-		#self.CompassRose.enableTextureTranslation(XPlaneDataDispatcher, [309,0],[ [0,0],[360,360]], self.renderRose )
-		
 		self.CompassCover = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [185,185],	[0	,0	])
 		self.CompassCover.resize([185,185])
 		
@@ -37,7 +33,7 @@ class GenCompass(graphics.Container):
 	def renderRose(self):
 		# value is mag compass heading
 		if self.testMode == False:
-			compassHeading = self.XPlaneDataDispatcher.getData(309,0) % 360
+			compassHeading = XPlaneUDPServer.pyXPUDPServer.getData(309,0) % 360
 		else:
 			compassHeading = self.testValue % 360
 		

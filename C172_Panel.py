@@ -2,8 +2,10 @@ from lib.general import pyXPPanel
 from lib.graphics import OpenGL3lib
 from lib.graphics import graphicsGL3
 from lib.graphics import fonts
+from lib.network import XPlaneUDPServer
 
 def drawInstruments():
+	
 	
 	airspeedIndicator.setTestValue(testGaugesPanel.testValue)
 	altimeter.setTestValue(testGaugesPanel.testValue)
@@ -146,28 +148,28 @@ XPlaneDataServer.requestXPDref(321, "sim/cockpit2/controls/elevator_trim[0]")
 
 batchImageRenderer = OpenGL3lib.GL_BatchImageRenderer(10) # create a batch renderer with 10 layers
 
-annunciatorPanel = 	C172_AnnunciatorPanel.C172_AnnunciatorPanel		(ANNUNCIATOR_pos, 	ANNUNCIATOR_size,		XPlaneDataServer, batchImageRenderer, 	standard6Texture)
+annunciatorPanel = 	C172_AnnunciatorPanel.C172_AnnunciatorPanel		(ANNUNCIATOR_pos, 	ANNUNCIATOR_size,		batchImageRenderer, 	standard6Texture)
 
-fuelFlowGauge = 	C172_FuelFlowGauge.C172_FuelFlowGauge			(FUELFLOW_pos,		smallGaugeSize, 		XPlaneDataServer, batchImageRenderer, 	standard6Texture)	#calibrated
-vacAmpGauge = 		C172_AmpVacGauge.C172_AmpVacGauge				(AMP_VAC_pos,		smallGaugeSize, 		XPlaneDataServer, batchImageRenderer, 	standard6Texture)	#calibrated
-oilGauge = 			C172_OilPressTempGauge.C172_OilPressTempGauge	(OIL_pos,			smallGaugeSize, 		XPlaneDataServer, batchImageRenderer, 	standard6Texture)	#calibrated
-fuelGauge = 		C172_FuelGauge.C172_FuelGauge					(FUEL_pos,			smallGaugeSize, 		XPlaneDataServer, batchImageRenderer, 	standard6Texture)	#calibrated
+fuelFlowGauge = 	C172_FuelFlowGauge.C172_FuelFlowGauge			(FUELFLOW_pos,		smallGaugeSize, 		batchImageRenderer, 	standard6Texture)	#calibrated
+vacAmpGauge = 		C172_AmpVacGauge.C172_AmpVacGauge				(AMP_VAC_pos,		smallGaugeSize, 		batchImageRenderer, 	standard6Texture)	#calibrated
+oilGauge = 			C172_OilPressTempGauge.C172_OilPressTempGauge	(OIL_pos,			smallGaugeSize, 		batchImageRenderer, 	standard6Texture)	#calibrated
+fuelGauge = 		C172_FuelGauge.C172_FuelGauge					(FUEL_pos,			smallGaugeSize, 		batchImageRenderer, 	standard6Texture)	#calibrated
 
-airspeedIndicator = C172_AirspeedIndicator.C172_AirspeedIndicator	(ASI_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
-altimeter = 		C172_Altimeter.C172_Altimeter					(ALT_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
-vario = 			C172_VSI_Indicator.C172_VSI_Indicator			(VSI_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
-gyro = 				C172_DirectionalGyro.C172_DirectionalGyro		(DG_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
-artHorizon = 		C172_ArtificialHorizon.C172_ArtificialHorizon	(AH_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
-turnCoord = 		C172_TurnCoordinator.C172_TurnCoordinator		(TC_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, 	standard6Texture, ZOOM_STD6)
+airspeedIndicator = C172_AirspeedIndicator.C172_AirspeedIndicator	(ASI_pos,			standardInstrumentSize, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
+altimeter = 		C172_Altimeter.C172_Altimeter					(ALT_pos,			standardInstrumentSize, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
+vario = 			C172_VSI_Indicator.C172_VSI_Indicator			(VSI_pos,			standardInstrumentSize, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
+gyro = 				C172_DirectionalGyro.C172_DirectionalGyro		(DG_pos,			standardInstrumentSize, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
+artHorizon = 		C172_ArtificialHorizon.C172_ArtificialHorizon	(AH_pos,			standardInstrumentSize, batchImageRenderer, 	standard6Texture, ZOOM_STD6)	#calibrated
+turnCoord = 		C172_TurnCoordinator.C172_TurnCoordinator		(TC_pos,			standardInstrumentSize, batchImageRenderer, 	standard6Texture, ZOOM_STD6)
 
-VOR1 = 				C172_VOR.C172_VOR								(VOR1_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, standard6Texture, "172 VOR1", "VOR1", ZOOM_VORADF)	#calibrated
-VOR2 = 				C172_VOR.C172_VOR								(VOR2_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, standard6Texture, "172 VOR2", "VOR2", ZOOM_VORADF)	#calibrated
-ADF = 				C172_ADF.C172_ADF								(ADF_pos,			standardInstrumentSize, XPlaneDataServer, batchImageRenderer, standard6Texture, ZOOM_VORADF)		#calibrated
-RPM = 				C172_RPM_Indicator.C172_RPM_Indicator			(RPM_pos,			(280,280)			  , XPlaneDataServer, batchImageRenderer, standard6Texture, 0.9)		#calibrated
+VOR1 = 				C172_VOR.C172_VOR								(VOR1_pos,			standardInstrumentSize, batchImageRenderer, standard6Texture, "172 VOR1", "VOR1", ZOOM_VORADF)	#calibrated
+VOR2 = 				C172_VOR.C172_VOR								(VOR2_pos,			standardInstrumentSize, batchImageRenderer, standard6Texture, "172 VOR2", "VOR2", ZOOM_VORADF)	#calibrated
+ADF = 				C172_ADF.C172_ADF								(ADF_pos,			standardInstrumentSize, batchImageRenderer, standard6Texture, ZOOM_VORADF)		#calibrated
+RPM = 				C172_RPM_Indicator.C172_RPM_Indicator			(RPM_pos,			(280,280)			  , batchImageRenderer, standard6Texture, 0.9)		#calibrated
 
-Compass = 			GenCompass.GenCompass							(Compass_pos,		(120,66)			  , XPlaneDataServer, batchImageRenderer, compassTexture)
+Compass = 			GenCompass.GenCompass							(Compass_pos,		(120,66)			  , batchImageRenderer, compassTexture)
 
-PitchTrimSlider = 	Gen_SliderIndicator.Gen_SliderIndicator			((1350,500),		(100,30), 				XPlaneDataServer, batchImageRenderer, sliderTexture)
+PitchTrimSlider = 	Gen_SliderIndicator.Gen_SliderIndicator			((1350,500),		(100,30), 				batchImageRenderer, sliderTexture)
 PitchTrimSlider.setPointerDataref((321,0))
 
 #airportPlatesBrowser = AirportPlatesBrowser.AirportPlatesBrowser([1000,testGaugesPanel.frameBufferHeight-950], [570,840], testGaugesPanel, batchImageRenderer)
