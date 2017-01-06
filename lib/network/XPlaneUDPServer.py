@@ -46,8 +46,9 @@ class XPlaneUDPServer(threading.Thread):
 		self.sendSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		
 		self.RREF_sockets = [] # list to store RREF sockets, one for each dataref subscribed. Not very elegant, but XPlane does not seem to be able to deal with multiple RREF requests from the same socket
+		self.datarefsDict = {} # dictionary to store dataref values received from XP
 		
-		self.dataList =[]
+		self.dataList =[] # list to store the Data Set values received from XP as configured in the Data Input & Output screen
 		self.cmddata = None
 		for i in range(0,1024) :
 			self.dataList.append([0,0,0,0,0,0,0,0]) # initialise the dataList with 0 values
@@ -72,10 +73,9 @@ class XPlaneUDPServer(threading.Thread):
 		self.forwardXPDataAddresses = forwardAddresses
 
 	## Returns data last received from XPlane for the key, index provided. 
-	# @param key: The XPlane data group ID
-	# @param index: the index in the data group
+	# @param dataReference: This can be either a tuple if requesting data set up in the Data Input&Output screen in XPlane, or a string if requesting data from a dataref. The method will automatically request XP to send the dataref if it has not been done previously. 
 	#
-	def getData(self,key,index):
+	def getData(self,dataReference):
 		if key >= 0 and key <1024:
 			return self.dataList[key][index]
 		else:
