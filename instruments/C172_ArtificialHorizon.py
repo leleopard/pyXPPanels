@@ -31,7 +31,7 @@ class C172_ArtificialHorizon(graphics.Container):
 		self.artHorizonInnerHor.enableRotation ((17,1),[[-180,180],[0,0],[180,-180]])
 		self.artHorizonInnerHor.enableTranslation ((17,0),[[-25,48*zoom],[0,0],[25,-50*zoom]])
 		self.artHorizonBackgroundHor.enableRotation ((17,1),[ [-180,180],[0,0],[180,-180]])
-		self.artHorizonPlaneGizmo.enableTranslation ((306,0),[[-25,-48*zoom],[0,0],[25,50*zoom]])
+		self.artHorizonPlaneGizmo.enableTranslation ("sim/cockpit2/gauges/actuators/artificial_horizon_adjust_deg_pilot[0]",[[-25,-48*zoom],[0,0],[25,50*zoom]])
 		
 		self.addItem(self.artHorizonBackgroundHor)
 		self.addItem(self.artHorizonInnerHor)

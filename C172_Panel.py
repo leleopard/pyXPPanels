@@ -133,18 +133,7 @@ from instruments import Gen_SliderIndicator
 #------------------------------------------------------------------------------------------
 #	Initialise Instruments
 #------------------------------------------------------------------------------------------
-XPlaneDataServer = testGaugesPanel.XPlaneDataServer
 
-XPlaneDataServer.requestXPDref(301, "sim/cockpit/radios/nav1_dme_dist_m[0]")
-XPlaneDataServer.requestXPDref(302, "sim/cockpit/radios/nav1_obs_degt[0]")
-XPlaneDataServer.requestXPDref(303, "sim/cockpit/misc/compass_indicated[0]")
-XPlaneDataServer.requestXPDref(304, "sim/cockpit/radios/nav1_freq_hz[0]")
-XPlaneDataServer.requestXPDref(305, "sim/cockpit/radios/nav_type[0]")
-XPlaneDataServer.requestXPDref(306, "sim/cockpit2/gauges/actuators/artificial_horizon_adjust_deg_pilot[0]")
-XPlaneDataServer.requestXPDref(307, "sim/cockpit2/gauges/indicators/turn_rate_roll_deg_pilot[0]")
-XPlaneDataServer.requestXPDref(308, "sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot[0]")
-XPlaneDataServer.requestXPDref(309, "sim/cockpit2/gauges/indicators/compass_heading_deg_mag[0]")
-XPlaneDataServer.requestXPDref(321, "sim/cockpit2/controls/elevator_trim[0]")
 
 batchImageRenderer = OpenGL3lib.GL_BatchImageRenderer(10) # create a batch renderer with 10 layers
 

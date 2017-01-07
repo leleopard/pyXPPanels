@@ -524,18 +524,18 @@ class ImagePanel(Panel):
 		self.text_zoom = textZoom
 		self.refreshTextZoom = True
 	
-	def enableTextureTranslation(self,dataSourceKeyIndex, indValueToTranslationTable, translationConvertFunction = False):
+	def enableTextureTranslation(self,dataSourceReference, indValueToTranslationTable, translationConvertFunction = False):
 		self.textTranslating = True
 		self.textTranslationConvertFunction = translationConvertFunction
 		
-		self.textTranslationXPdata = dataSourceKeyIndex
+		self.textTranslationXPdata = dataSourceReference
 		self.textValueToMoveTable = self.createFactorsTable(indValueToTranslationTable)
 	
-	def enableTextureRotation(self,dataSourceKeyIndex, indValueToRotationTable, rotationConvertFunction = False):
+	def enableTextureRotation(self,dataSourceReference, indValueToRotationTable, rotationConvertFunction = False):
 		self.textRotating = True
 		self.textRotationConvertFunction = rotationConvertFunction
 		
-		self.textRotationXPdata = dataSourceKeyIndex
+		self.textRotationXPdata = dataSourceReference
 		self.textValueToRotationTable = self.createFactorsTable(indValueToRotationTable)
 	
 	def setAddTranslation(self, translation):
@@ -547,14 +547,14 @@ class ImagePanel(Panel):
 			self.width = self.image.width
 			self.height = self.image.height
 
-	def toggleVisibility(self, dataSourceKeyIndex, visibilityToggleFunction = False):
+	def toggleVisibility(self, dataSourceReference, visibilityToggleFunction = False):
 		self.visibilityToggleFunction = visibilityToggleFunction
-		self.visibilityXPData = dataSourceKeyIndex
+		self.visibilityXPData = dataSourceReference
 		
-	def enableRotation(self, dataSourceKeyIndex, indValueToAnglesTable, rotationConvertFunction = False):
+	def enableRotation(self, dataSourceReference, indValueToAnglesTable, rotationConvertFunction = False):
 		self.rotating = True
 		self.rotationConvertFunction = rotationConvertFunction
-		self.rotationXPdata = dataSourceKeyIndex
+		self.rotationXPdata = dataSourceReference
 		self.valueToRotAnglesTable = self.createFactorsTable(indValueToAnglesTable)
 
 	def setRotationCenter(self,rotationCenter):
@@ -563,14 +563,14 @@ class ImagePanel(Panel):
 	def setTextureRotationCenter(self,rotationCenter):
 		self.textureRotationCenter = rotationCenter
 	
-	def enableTranslation(self,dataSourceKeyIndex, indValueToTranslationTable, translationConvertFunction = False,translationAngle=None,addAngleToRotation=None):
+	def enableTranslation(self,dataSourceReference, indValueToTranslationTable, translationConvertFunction = False,translationAngle=None,addAngleToRotation=None):
 		self.translating = True
 		self.translationConvertFunction = translationConvertFunction
 		if translationAngle:
 			self.translationAngle = translationAngle
 		if addAngleToRotation:
 			self.addRotAngleForTranslation = addAngleToRotation
-		self.translationXPdata = dataSourceKeyIndex
+		self.translationXPdata = dataSourceReference
 		self.valueToMoveTable = self.createFactorsTable(indValueToTranslationTable)
 		
 	def draw(self):
@@ -583,7 +583,7 @@ class ImagePanel(Panel):
 		if self.visibilityXPData:
 			
 			if self.testMode == False:
-				XPindicatedValue = float(self.XPUDPServer.getData(self.visibilityXPData[0],self.visibilityXPData[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.visibilityXPData))
 			else: 
 				XPindicatedValue = self.testValue
 				
@@ -600,7 +600,7 @@ class ImagePanel(Panel):
 		
 		if self.rotating == True:
 			if self.testMode == False:
-				XPindicatedValue = self.XPUDPServer.getData(self.rotationXPdata[0],self.rotationXPdata[1])
+				XPindicatedValue = self.XPUDPServer.getData(self.rotationXPdata)
 			else: 
 				XPindicatedValue = self.testValue
 			
@@ -620,7 +620,7 @@ class ImagePanel(Panel):
 		
 		if self.translating == True:
 			if self.testMode == False:
-				XPindicatedValue = float(self.XPUDPServer.getData(self.translationXPdata[0],self.translationXPdata[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.translationXPdata))
 			else: 
 				XPindicatedValue = self.testValue
 			
@@ -646,7 +646,7 @@ class ImagePanel(Panel):
 		
 		if self.textRotating == True:
 			if self.testMode == False:
-				XPindicatedValue = float(self.XPUDPServer.getData(self.textRotationXPdata[0],self.textRotationXPdata[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.textRotationXPdata))
 			else: 
 				XPindicatedValue = self.testValue
 			
@@ -658,7 +658,7 @@ class ImagePanel(Panel):
 		
 		if self.textTranslating == True:
 			if self.testMode == False:
-				XPindicatedValue = float(self.XPUDPServer.getData(self.textTranslationXPdata[0],self.textTranslationXPdata[1]))
+				XPindicatedValue = float(self.XPUDPServer.getData(self.textTranslationXPdata))
 			else: 
 				XPindicatedValue = self.testValue
 			
@@ -766,7 +766,7 @@ class TextField(Container):
 		self.image = font
 		self.text = ""
 		self.XPUDPServer = XPlaneUDPServer.pyXPUDPServer
-		self.textDataSourceKeyIndex = None
+		self.textDataSourceReference = None
 		self.textFormat = '{:.1f}'
 		self.unitText = ""
 		self.prefixUnit = False
@@ -793,8 +793,8 @@ class TextField(Container):
 		self.refreshPosition = True
 		self.image.needRefresh = True
 		
-	def setTextDataSource(self, dataSourceKeyIndex, dataConvertFunction = False):
-		self.textDataSourceKeyIndex = dataSourceKeyIndex
+	def setTextDataSource(self, textDataSourceReference, dataConvertFunction = False):
+		self.textDataSourceReference = textDataSourceReference
 		self.dataConvertFunction = dataConvertFunction
 	
 	def setDisplayUnit(self, unitText, prefix = False ):
@@ -809,7 +809,7 @@ class TextField(Container):
 			
 			XPValue = 0
 			if self.XPUDPServer != None:
-				XPValue = self.XPUDPServer.getData(self.textDataSourceKeyIndex[0],self.textDataSourceKeyIndex[1])
+				XPValue = self.XPUDPServer.getData(self.textDataSourceReference)
 				if self.dataConvertFunction != False:
 					XPValue = float(self.dataConvertFunction(XPValue,self.XPUDPServer))
 				
@@ -849,7 +849,7 @@ class AnimatedImage(ImagePanel):
 		self.testValue = 1
 		self.dataConvertFunction = False
 		self.XPdataSource = False
-		self.dataSourceKeyIndex = False
+		self.dataSourceReference = False
 		
 	def resize(self,size):
 		for i in range(self.startStepNumber,self.endStepNumber+1) :
@@ -857,16 +857,16 @@ class AnimatedImage(ImagePanel):
 		self.width = self.imageFrames[self.startStepNumber].width
 		self.height = self.imageFrames[self.startStepNumber].height
 	
-	def setAnimationDataValue(self,XPdataSource, dataSourceKeyIndex, dataConvertFunction = False):
+	def setAnimationDataValue(self,XPdataSource, dataSourceReference, dataConvertFunction = False):
 		self.dataConvertFunction = dataConvertFunction
 		self.XPdataSource = XPdataSource
-		self.dataSourceKeyIndex = dataSourceKeyIndex
+		self.dataSourceReference = dataSourceReference
 	
 	def draw(self):
 		if self.testMode == True :
 			drawIndex = int(self.testValue%360)
 		else :
-			drawIndex = int(self.XPdataSource.getData(self.dataSourceKeyIndex[0],self.dataSourceKeyIndex[1]))
+			drawIndex = int(self.XPdataSource.getData(self.dataSourceReference))
 		if self.dataConvertFunction != False:
 			drawIndex = self.dataConvertFunction(drawIndex,self.XPdataSource)
 		

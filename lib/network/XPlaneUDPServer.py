@@ -47,6 +47,7 @@ class XPlaneUDPServer(threading.Thread):
 		
 		self.RREF_sockets = [] # list to store RREF sockets, one for each dataref subscribed. Not very elegant, but XPlane does not seem to be able to deal with multiple RREF requests from the same socket
 		self.datarefsDict = {} # dictionary to store dataref values received from XP
+		self.datarefsIndices = {}
 		
 		self.dataList =[] # list to store the Data Set values received from XP as configured in the Data Input & Output screen
 		self.cmddata = None
@@ -76,20 +77,67 @@ class XPlaneUDPServer(threading.Thread):
 	# @param dataReference: This can be either a tuple if requesting data set up in the Data Input&Output screen in XPlane, or a string if requesting data from a dataref. The method will automatically request XP to send the dataref if it has not been done previously. 
 	#
 	def getData(self,dataReference):
-		if key >= 0 and key <1024:
-			return self.dataList[key][index]
-		else:
-			return 0
+		if isinstance(dataReference, tuple): # then we need to return data from dataList 
+			if dataReference[0] >= 0 and dataReference[0] <1024:
+				return self.dataList[dataReference[0]] [dataReference[1]]
+			else:
+				return 0.0
+		if isinstance(dataReference, str): # then we have a dataref - this works with python 3 only. 
+			if dataReference in self.datarefsDict: # that dataref has already been requested so return the value
+				return self.datarefsDict[dataReference]
+			else: # this dataref has not been requested so let's request it, and return 0.0 for this time
+				self.requestXPDref(dataReference)
+				return 0.0
+		else: # then we have been passed rubbish
+			logging.error("can not recognise the type of dataReference")
+			return 0.0
 	
 	## Prints data to the console for the key, index provided. 
-	# @param key: The XPlane data group ID
+	# @param dataReference: This can be either a tuple if requesting data set up in the Data Input&Output screen in XPlane, or a string if requesting data from a dataref. The method will automatically request XP to send the dataref if it has not been done previously. 
 	# 
-	def printData(self,key):
+	def printData(self,dataReference):
 		if key >= 0 and key <1024:
 			print ("Data Group: ", key, " [",self.dataList[key][0],",",self.dataList[key][1],",",self.dataList[key][2],",",self.dataList[key][3],",",self.dataList[key][4],",",self.dataList[key][5],",",self.dataList[key][6],",",self.dataList[key][7],"]")
 		else:
 			logging.error ( "Invalid key")
-			
+	
+
+	## Request Dataref from XPlane
+	# @param string for the dataref to be requested from XPlane - refer to the XPlane doc for a list of available datarefs
+	#
+	def requestXPDref(self, dataref):
+		if self.XPAddress is not None: # check if we have XPlane's IP, if so continue, else log an error 
+			if dataref in self.datarefsDict: #  if the dataref has already been requested, then return, no need to do anything
+				logging.debug("dataref has already been requested")
+				return 
+			else: 
+				self.datarefsDict[dataref] = 0.0	# initialise a new key for this dataref
+				index = len(self.datarefsDict)-1	# give it an index
+				self.datarefsIndices[index] = dataref
+				
+				RREF_Sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+				self.RREF_sockets.append(RREF_Sock)
+				
+				dataref+= '\0'
+				nr_trailing_spaces = 400-len(dataref)
+				
+				msg = "RREF"+'\0'
+				packedindex = pack('<i', index)
+				packedfrequency = pack('<i', 30)
+				msg += packedfrequency.decode(encoding = 'latin_1')
+				msg += packedindex.decode(encoding = 'latin_1')
+				msg += dataref
+				msg += ' '*nr_trailing_spaces
+				
+				logging.debug("Requesting DataRef, RREF msg: %s", msg)
+				logging.debug("dataref dictionary: %s", self.datarefsDict)
+				logging.debug("dataref indices: %s", self.datarefsIndices)
+				RREF_Sock.sendto(msg.encode('latin_1'), self.XPAddress)
+				RREF_Sock.setblocking(0)
+		else:
+			logging.error("XPlane IP address undefined")
+	
+	
 	## send command to XPlane
 	# @param string for the command to be sent to XPlane - refer to the XPlane doc for a list of available commands
 	#
@@ -127,32 +175,6 @@ class XPlaneUDPServer(threading.Thread):
 	def registerXPCmdCallback(self, callback):
 		self.XPCmd_Callback_Functions.append(callback)
 		
-	
-	## Request Dataref from XPlane
-	# @param string for the dataref to be requested from XPlane - refer to the XPlane doc for a list of available datarefs
-	#
-	def requestXPDref(self, index, dataref):
-		if self.XPAddress is not None:
-			RREF_Sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-			self.RREF_sockets.append(RREF_Sock)
-			
-			dataref+= '\0'
-			nr_trailing_spaces = 400-len(dataref)
-			
-			msg = "RREF"+'\0'
-			packedindex = pack('<i', index)
-			packedfrequency = pack('<i', 30)
-			msg += packedfrequency.decode(encoding = 'latin_1')
-			msg += packedindex.decode(encoding = 'latin_1')
-			msg += dataref
-			msg += ' '*nr_trailing_spaces
-			
-			logging.debug("Requesting DataRef, RREF msg: %s", msg)
-			
-			RREF_Sock.sendto(msg.encode('latin_1'), self.XPAddress)
-			RREF_Sock.setblocking(0)
-		else:
-			logging.error("XPlane IP address undefined")
 	
 	## Enables the redirection of traffic received by the class to XPlane
 	# @param myAddress: The address the class is listening for traffic on. Format: (IP,port)
@@ -205,9 +227,11 @@ class XPlaneUDPServer(threading.Thread):
 					if rrefdata[0:4].decode('ascii') == 'RREF':
 						index = unpack('<i', rrefdata[5:9])[0]
 						value = unpack('<f', rrefdata[9:13])[0]
-			
+						
+						dataref = self.datarefsIndices[index]
+						self.datarefsDict[dataref] = value
 						#logging.debug("RREF index "+str(index) + ", value: "+ str(value))
-						self.dataList[index][0] = value
+						#self.dataList[index][0] = value
 						
 			except : 
 				pass

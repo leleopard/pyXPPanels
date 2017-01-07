@@ -33,7 +33,7 @@ class GenCompass(graphics.Container):
 	def renderRose(self):
 		# value is mag compass heading
 		if self.testMode == False:
-			compassHeading = XPlaneUDPServer.pyXPUDPServer.getData(309,0) % 360
+			compassHeading = XPlaneUDPServer.pyXPUDPServer.getData("sim/cockpit2/gauges/indicators/compass_heading_deg_mag[0]") % 360
 		else:
 			compassHeading = self.testValue % 360
 		

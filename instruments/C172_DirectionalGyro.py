@@ -25,7 +25,7 @@ class C172_DirectionalGyro(graphics.Container):
 		self.dirGyroBezel =  		graphics.ImagePanel(texture, batchImageRenderer,self.layer, [0,0], [310,310],	[300*4	,2048-300*6-10	])
 		self.dirGyroBezel.resize([310*zoom,310*zoom])
 		
-		self.dirGyroBackground.enableRotation ((308,0),[[0,0],[160,-160],[210,-211],[360,-360]])
+		self.dirGyroBackground.enableRotation ("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot[0]",[[0,0],[160,-160],[210,-211],[360,-360]])
 		self.dirGyroBug.enableRotation ((118,1),[ [0,0],[160,160],[210,211],[360,360]], conversionFunctions.addCompassHeadingToValue)
 
 		self.addItem(self.dirGyroBackground)
