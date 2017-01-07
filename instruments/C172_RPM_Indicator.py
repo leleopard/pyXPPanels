@@ -24,7 +24,7 @@ class C172_RPM_Indicator(graphics.Container):
 		self.RPMBezel = 			graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [310,310],	[300*4		,2048-300*6-10	])
 		self.RPMBezel.resize([280*zoom,280*zoom])
 
-		self.RPMNeedle.enableRotation ([37,0],[ [0,-124.5],
+		self.RPMNeedle.enableRotation ((37,0),[ [0,-124.5],
 			[500,-94],
 			[1000,-64.5],
 			[1800,0],

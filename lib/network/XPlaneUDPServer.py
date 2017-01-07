@@ -32,6 +32,7 @@ class XPlaneUDPServer(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 		self.running = True
+		self.lasttimeXPdatareceived = None
 		
 		# socket listening to XPlane Data
 		self.XplaneRCVsock = None
@@ -77,17 +78,22 @@ class XPlaneUDPServer(threading.Thread):
 	# @param dataReference: This can be either a tuple if requesting data set up in the Data Input&Output screen in XPlane, or a string if requesting data from a dataref. The method will automatically request XP to send the dataref if it has not been done previously. 
 	#
 	def getData(self,dataReference):
+		strobject = str
+		if PYTHON_VERSION == 2: strobject = basestring 
+			
 		if isinstance(dataReference, tuple): # then we need to return data from dataList 
 			if dataReference[0] >= 0 and dataReference[0] <1024:
 				return self.dataList[dataReference[0]] [dataReference[1]]
 			else:
 				return 0.0
-		if isinstance(dataReference, str): # then we have a dataref - this works with python 3 only. 
+		
+		elif isinstance(dataReference, strobject): # then we have a dataref - this works with python 3 only. 
 			if dataReference in self.datarefsDict: # that dataref has already been requested so return the value
 				return self.datarefsDict[dataReference]
 			else: # this dataref has not been requested so let's request it, and return 0.0 for this time
 				self.requestXPDref(dataReference)
 				return 0.0
+		
 		else: # then we have been passed rubbish
 			logging.error("can not recognise the type of dataReference")
 			return 0.0

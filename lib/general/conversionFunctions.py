@@ -123,13 +123,13 @@ def return10000s(XPindicatedValue,XPlaneDataDispatcher):
 	return XPindicatedValue
 
 def addCompassHeadingToValue(XPindicatedValue,XPlaneDataDispatcher):
-	bugHeading = XPindicatedValue - XPlaneDataDispatcher.dataList[308][0]
+	bugHeading = XPindicatedValue - XPlaneDataDispatcher.getData("sim/cockpit2/gauges/indicators/heading_vacuum_deg_mag_pilot[0]")
 	if bugHeading < 0:
 		bugHeading = bugHeading+360
 	return bugHeading
 	
 def addNondriftCompassHeadingToValue(XPindicatedValue,XPlaneDataDispatcher):
-	bugHeading = XPindicatedValue - XPlaneDataDispatcher.dataList[17][3]
+	bugHeading = XPindicatedValue - XPlaneDataDispatcher.getData((17,3))
 	if bugHeading < 0:
 		bugHeading = bugHeading+360
 	return bugHeading
