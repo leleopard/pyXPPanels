@@ -26,23 +26,23 @@ class C172_AnnunciatorPanel(graphics.Container):
 		annunc_xoffset = -155
 		annunc_yoffset = 13
 		
-		self.C172_AnnunciatorPanel_alternator  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,25],	[300		,2048-300*6-67-25		])
-		self.C172_AnnunciatorPanel_alternator.resize([107,25])
+		self.C172_AnnunciatorPanel_alternator  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,24],	[300		,2048-300*6-67-25		])
+		self.C172_AnnunciatorPanel_alternator.resize([107,24])
 		self.C172_AnnunciatorPanel_alternator.toggleVisibility((115,4), conversionFunctions.returnTrueIfOverZero)
 		self.addItem(self.C172_AnnunciatorPanel_alternator, (annunc_xoffset,annunc_yoffset), False)
 		
-		self.C172_AnnunciatorPanel_battery  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,25],	[300+107		,2048-300*6-67-25		])
-		self.C172_AnnunciatorPanel_battery.resize([107,25])
+		self.C172_AnnunciatorPanel_battery  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,24],	[300+107		,2048-300*6-67-25		])
+		self.C172_AnnunciatorPanel_battery.resize([107,24])
 		self.C172_AnnunciatorPanel_battery.toggleVisibility((113,5), conversionFunctions.returnTrueIfOverZero)
 		self.addItem(self.C172_AnnunciatorPanel_battery, (annunc_xoffset+107,annunc_yoffset), False)
 		
-		self.C172_AnnunciatorPanel_lowfuel  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,25],	[300+107*2		,2048-300*6-67-25		])
-		self.C172_AnnunciatorPanel_lowfuel.resize([107,25])
+		self.C172_AnnunciatorPanel_lowfuel  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,24],	[300+107*2		,2048-300*6-67-25		])
+		self.C172_AnnunciatorPanel_lowfuel.resize([107,24])
 		self.C172_AnnunciatorPanel_lowfuel.toggleVisibility((113,6), conversionFunctions.returnTrueIfOverZero)
 		self.addItem(self.C172_AnnunciatorPanel_lowfuel, (annunc_xoffset+107*2,annunc_yoffset), False)
 		
-		self.C172_AnnunciatorPanel_brakes  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,25],	[300+107*3		,2048-300*6-67-25		])
-		self.C172_AnnunciatorPanel_brakes.resize([107,25])
+		self.C172_AnnunciatorPanel_brakes  = graphics.ImagePanel(texture, batchImageRenderer, self.layer, [0,0], [107,24],	[300+107*3		,2048-300*6-67-25		])
+		self.C172_AnnunciatorPanel_brakes.resize([107,24])
 		self.C172_AnnunciatorPanel_brakes.toggleVisibility((14,1), conversionFunctions.returnTrueIfOverZero)
 		self.addItem(self.C172_AnnunciatorPanel_brakes, (annunc_xoffset+107*3,annunc_yoffset), False)
 		

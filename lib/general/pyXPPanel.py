@@ -151,6 +151,7 @@ class pyXPPanel():
 		self.Port = Config.getint("Network","Port")
 		self.XPlaneIP = Config.get("Network","XPlaneIP")
 		self.XPlanePort = Config.getint("Network","XPlanePort")
+		self.XPlaneComputerName = Config.get("Network","XPlaneComputerName")
 		
 		#------------------------------------------------------------------------------------------
 		#	Arduino configuration
@@ -239,12 +240,18 @@ class pyXPPanel():
 		gl3lib.PROJ_MATRIX[1,1] = 2.0/self.frameBufferHeight
 		
 		fonts.initFonts()
+		
+		# ADF ADF indicator
+		self.receivingXPdataText = graphicsGL3.TextField(fonts.VERA_20PT_BOLD_ORANGE)
+		self.receivingXPdataText.setText('-- !! Not receiving any data from XPlane !! --')
+		self.receivingXPdataText.setBackgroundColor((1.0,1.0,1.0,0.75))
+		self.receivingXPdataText.setPosition((20,20))
 
 	## Initialise UDP connectivity to XPlane; Creates a new XPlaneUDPServer instance and starts it - Private method called by the constructor, not intended to be called outside of the class.  
 	# the network options for XPlane (IP, port....) are defined in the config file
 	#
 	def _initXPlaneDataServer(self):
-		XPlaneUDPServer.pyXPUDPServer.initialiseUDP((self.IP,self.Port), (self.XPlaneIP,self.XPlanePort))
+		XPlaneUDPServer.pyXPUDPServer.initialiseUDP((self.IP,self.Port), (self.XPlaneIP,self.XPlanePort), self.XPlaneComputerName)
 		XPlaneUDPServer.pyXPUDPServer.start()
 		self.XPlaneDataServer = XPlaneUDPServer.pyXPUDPServer
 	
@@ -446,6 +453,12 @@ class pyXPPanel():
 
 			for drawCallback in self.drawCallbackFuncs:
 				drawCallback()
+			
+			if XPlaneUDPServer.pyXPUDPServer.XPalive == True:
+				self.receivingXPdataText.setVisible(False)
+			else:
+				self.receivingXPdataText.setVisible(True)
+			self.receivingXPdataText.draw()
 			
 			# Swap front and back buffers
 			glfw.glfwSwapBuffers(self.window)

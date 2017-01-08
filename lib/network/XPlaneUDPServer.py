@@ -32,7 +32,20 @@ class XPlaneUDPServer(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 		self.running = True
-		self.lasttimeXPdatareceived = None
+		self.updatingRREFdict = False
+		
+		self.XPbeacon = {
+			'beacon_major_version'	: None,
+			'beacon_minor_version'	: None,
+			'application_host_id'	: None,
+			'version_number'		: None,
+			'role'					: None,
+			'port'					: None,
+			'computer_name' 		: None
+		}
+		
+		self.MCAST_GRP = '239.255.1.1'
+		self.MCAST_PORT = 49707
 		
 		# socket listening to XPlane Data
 		self.XplaneRCVsock = None
@@ -42,6 +55,7 @@ class XPlaneUDPServer(threading.Thread):
 		self.RDRCT_TRAFFIC = False # by default we do not redirect incoming traffic to Xplane
 		self.DataRCVsock = False 
 		self.XPAddress = None
+		self.XPComputerName = None
 						
 		# socket to send data
 		self.sendSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -58,15 +72,26 @@ class XPlaneUDPServer(threading.Thread):
 	## Initialise the UDP sockets to communicate with XPlane
 	# @param Address: tuple of IP address, UDP port we are listening on
 	# @param XPAddress: tuple of IP address, UDP port for XPlane
+	# @param XPComputerName: Network name of the computer XPlane is running on
 	#
-	def initialiseUDP(self, Address, XPAddress = None):
+	def initialiseUDP(self, Address, XPAddress, XPComputerName):
 		logging.info("Initialising XPlaneUDPServer on address: %s", Address)
 		# socket listening to XPlane Data
 		self.XplaneRCVsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.XplaneRCVsock.setblocking(0)
 		self.XplaneRCVsock.bind(Address) # bind this socket to listen to traffic from XPlane on the address passed to the constructor
 		self.XPAddress = XPAddress
+		self.XPComputerName = XPComputerName
+		self.XPalive = True
 		
+		self.mcast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+		self.mcast_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		self.mcast_sock.bind(('', self.MCAST_PORT))  # use MCAST_GRP instead of '' to listen only
+												# to MCAST_GRP, not all groups on MCAST_PORT
+		mreq = pack("4sl", socket.inet_aton(self.MCAST_GRP), socket.INADDR_ANY)
+		
+		self.mcast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+		self.mcast_sock.setblocking(0)
 		
 	## Enables the forwarding of data received from XPLane to a list of IP addresses
 	# @param forwardAddresses: a list of addresses to forward to, in the format [(IP1,port1),(IP2,port2), ... ]
@@ -90,7 +115,9 @@ class XPlaneUDPServer(threading.Thread):
 		elif isinstance(dataReference, strobject): # then we have a dataref - this works with python 3 only. 
 			if dataReference in self.datarefsDict: # that dataref has already been requested so return the value
 				return self.datarefsDict[dataReference]
+				print(self.datarefsDict)
 			else: # this dataref has not been requested so let's request it, and return 0.0 for this time
+				print("dataref not previously requested %s", dataReference)
 				self.requestXPDref(dataReference)
 				return 0.0
 		
@@ -108,41 +135,71 @@ class XPlaneUDPServer(threading.Thread):
 			logging.error ( "Invalid key")
 	
 
-	## Request Dataref from XPlane
+	## Request Dataref from XPlane - note calling getData('somedataref') will achieve the same effect and might be easier (will call this function in the background)
 	# @param string for the dataref to be requested from XPlane - refer to the XPlane doc for a list of available datarefs
 	#
 	def requestXPDref(self, dataref):
+		self.updatingRREFdict = True
+		
 		if self.XPAddress is not None: # check if we have XPlane's IP, if so continue, else log an error 
 			if dataref in self.datarefsDict: #  if the dataref has already been requested, then return, no need to do anything
-				logging.debug("dataref has already been requested")
+				logging.info("dataref has already been requested")
 				return 
 			else: 
+				logging.info("Requesting dataref %s", dataref)
 				self.datarefsDict[dataref] = 0.0	# initialise a new key for this dataref
 				index = len(self.datarefsDict)-1	# give it an index
-				self.datarefsIndices[index] = dataref
+				self.datarefsIndices[index] = ['',None]
+				self.datarefsIndices[index][0] = dataref
 				
 				RREF_Sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+				#RREF_Sock.setblocking(0)
+				self.datarefsIndices[index][1] = RREF_Sock
+				
+				logging.info("datarefs Dict: %s", self.datarefsDict)
+				logging.info("datarefs Indices: %s", self.datarefsIndices)
+				
 				self.RREF_sockets.append(RREF_Sock)
 				
-				dataref+= '\0'
-				nr_trailing_spaces = 400-len(dataref)
+				self.__sendRREFmessage(index)
+		self.updatingRREFdict = False
+	
+	## private - format and send an RREF message to XP
+	# 
+	def __sendRREFmessage(self, index):
+		if self.XPAddress is not None:
+			dataref = self.datarefsIndices[index][0]
+			
+			print ("***** ENTERING __sendRREFmessage ********")
+			dataref+= '\0'
+			nr_trailing_spaces = 400-len(dataref)
+			
+			msg = "RREF"+'\0'
+			packedindex = pack('<i', index)
+			packedfrequency = pack('<i', 30)
+			msg += packedfrequency.decode(encoding = 'latin_1')
+			msg += packedindex.decode(encoding = 'latin_1')
+			msg += dataref
+			msg += ' '*nr_trailing_spaces
+			
+			logging.info("Requesting DataRef, RREF msg: %s", msg)
+			self.datarefsIndices[index][1].sendto(msg.encode('latin_1'), self.XPAddress)
+			self.datarefsIndices[index][1].setblocking(0)
 				
-				msg = "RREF"+'\0'
-				packedindex = pack('<i', index)
-				packedfrequency = pack('<i', 30)
-				msg += packedfrequency.decode(encoding = 'latin_1')
-				msg += packedindex.decode(encoding = 'latin_1')
-				msg += dataref
-				msg += ' '*nr_trailing_spaces
-				
-				logging.debug("Requesting DataRef, RREF msg: %s", msg)
-				logging.debug("dataref dictionary: %s", self.datarefsDict)
-				logging.debug("dataref indices: %s", self.datarefsIndices)
-				RREF_Sock.sendto(msg.encode('latin_1'), self.XPAddress)
-				RREF_Sock.setblocking(0)
 		else:
 			logging.error("XPlane IP address undefined")
 	
+	## private - attempt to re subscribe all the RREFs previously subscribed (if XPlane was restarted for example)
+	# 
+	def __resubscribeRREFs(self):
+		if len(self.datarefsIndices) > 0 and self.updatingRREFdict == False:
+			logging.info("Attempt to re subscribe datarefs with XPlane")
+			if PYTHON_VERSION == 2:
+				for index, RREF in self.datarefsIndices.iteritems():
+					self.__sendRREFmessage(index)
+			else:
+				for index, RREF in self.datarefsIndices.items():
+					self.__sendRREFmessage(index)
 	
 	## send command to XPlane
 	# @param string for the command to be sent to XPlane - refer to the XPlane doc for a list of available commands
@@ -200,9 +257,27 @@ class XPlaneUDPServer(threading.Thread):
 	# If the instance has been configured to re direct traffic to XPlane, it will forward any packets received to XP
 	#
 	def run(self):
+		lasttimeXPbeaconreceived = time.time()
 		
 		while self.running:
-						
+			current_time = time.time()
+			
+			try:
+				msg = self.mcast_sock.recv(10240)
+				self.__parseXplaneBeaconPacket(msg)
+				if self.XPbeacon['computer_name'] == self.XPComputerName : # it seems the XPlane instance we are trying to communicate with is alive
+					lasttimeXPbeaconreceived = current_time
+					if self.XPalive == False: # if xplane was down it is now back up again, lets try and re subscribe the datarefs
+						self.__resubscribeRREFs()
+					self.XPalive = True
+							
+			except socket.error as msg: pass
+			
+			elapsed_time_since_beacon_rcvd = current_time - lasttimeXPbeaconreceived
+			if elapsed_time_since_beacon_rcvd >= 2.5: #we have not received data from Xplane for a while
+				logging.info("Not received XPlane beacon for %s seconds", elapsed_time_since_beacon_rcvd)
+				self.XPalive = False
+				
 			try:
 				#print ("xp server atttempt to receive data...")
 				data, addr = self.XplaneRCVsock.recvfrom(8192) # receive data from XPlane
@@ -212,7 +287,7 @@ class XPlaneUDPServer(threading.Thread):
 				#print(data[0:4])
 				if data[0:4].decode('ascii') == "DATA": 
 					#print("Received XP data")					
-					self.parseXplaneDataPacket(data)
+					self.__parseXplaneDataPacket(data)
 					
 				if len(self.forwardXPDataAddresses) > 0: # loop through forward addresses and send fwd_data packet
 					for i in range(0,len(self.forwardXPDataAddresses)) :
@@ -226,22 +301,20 @@ class XPlaneUDPServer(threading.Thread):
 				#print ("UDP Xplane receive error code ", str(msg[0]), " Message: ", str(msg[1]) )   
 			
 			try:
-				for RREFSocket in self.RREF_sockets:
-					rrefdata, rrefaddr = RREFSocket.recvfrom(8192)
-					#logging.debug("RREF data:: "+ str(rrefdata))
+				if self.updatingRREFdict == False: # to avoid having issues with dictionary iteration
 					
-					if rrefdata[0:4].decode('ascii') == 'RREF':
-						index = unpack('<i', rrefdata[5:9])[0]
-						value = unpack('<f', rrefdata[9:13])[0]
+					for index, RREF in self.datarefsIndices.items():
+						dataref = RREF[0]
+						rrefdata, rrefaddr = self.datarefsIndices[index][1].recvfrom(8192)
 						
-						dataref = self.datarefsIndices[index]
-						self.datarefsDict[dataref] = value
-						#logging.debug("RREF index "+str(index) + ", value: "+ str(value))
-						#self.dataList[index][0] = value
-						
-			except : 
-				pass
-				#logging.error("Error receiving RREF data")
+						if rrefdata[0:4].decode('ascii') == 'RREF':
+							index = unpack('<i', rrefdata[5:9])[0]
+							value = unpack('<f', rrefdata[9:13])[0]
+							
+							self.datarefsDict[dataref] = value
+			
+			except socket.error as msg: pass
+			
 			
 			if self.RDRCT_TRAFFIC == True:
 				try:
@@ -259,13 +332,31 @@ class XPlaneUDPServer(threading.Thread):
 		self.XplaneRCVsock.close()
 		if self.DataRCVsock != False:
 			self.DataRCVsock.close()
+		for index, RREF in self.datarefsIndices.items():
+			self.datarefsIndices[index][1].close()
 		logging.info("UDP Server stopped...")
-		
+	
+	## Internal method that parses a 'BECN' type packet received from XPlane
+	# @param packet: The UDP packet to parse
+	#
+	def __parseXplaneBeaconPacket(self, packet):
+		if packet[0:4].decode('ascii') == "BECN" :
+			self.XPbeacon['beacon_major_version']	= packet[5]
+			self.XPbeacon['beacon_minor_version']	= packet[6]
+			self.XPbeacon['application_host_id']	= unpack('<i', packet[7:11])[0]
+			self.XPbeacon['version_number']			= unpack('<i', packet[11:15])[0]
+			self.XPbeacon['role']					= unpack('<I', packet[15:19])[0]
+			self.XPbeacon['port']					= unpack('<H', packet[19:21])[0]
+			self.XPbeacon['computer_name']			= packet[21:len(packet)-1].decode('ascii')
+			
+			#print (self.XPbeacon)
+			
+	
 	## Internal method that parses a 'DATA' type packet received from XPlane
 	# it splits the packet into each data group, and calls the parseXPlaneDataGroup method to parse the dataGroup
 	# @param packet: The UDP packet to parse
 	#
-	def parseXplaneDataPacket(self, packet):
+	def __parseXplaneDataPacket(self, packet):
 		indexType = "XPUDP"
 		if packet[0:5].decode('ascii') == "DATA|" :
 			indexType ="STUDP"
@@ -281,12 +372,12 @@ class XPlaneUDPServer(threading.Thread):
 			#print ("Number of groups: ", nrGroups)	
 			
 			for i in range(0,nrGroups) :
-				self.parseXPlaneDataGroup(dataGroups[i*36:i*36+36], indexType)
+				self.__parseXPlaneDataGroup(dataGroups[i*36:i*36+36], indexType)
 
 	## Internal method that parses a Data group and stores it into the dataLIst attribute
 	# @param dataGroup: The data group to parse
 	#
-	def parseXPlaneDataGroup(self,dataGroup,indexType) :
+	def __parseXPlaneDataGroup(self,dataGroup,indexType) :
 		if indexType == "XPUDP":
 			index = unpack('B',dataGroup[0:1])[0]
 		if indexType == "STUDP":

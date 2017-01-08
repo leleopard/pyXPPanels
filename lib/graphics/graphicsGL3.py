@@ -765,13 +765,15 @@ class TextField(Container):
 	def __init__(self, font):
 		self.image = font
 		self.text = ""
-		self.XPUDPServer = XPlaneUDPServer.pyXPUDPServer
+		self.XPUDPServer = None
 		self.textDataSourceReference = None
 		self.textFormat = '{:.1f}'
 		self.unitText = ""
 		self.prefixUnit = False
 		self.dataConvertFunction = False
-	
+		
+		Container.__init__(self,(0,0), (650,25))
+		
 	## Sets the text to be displayed (static value). Note this will have no effect if you have set the TextField instance to display an XPlane value with the setTextDataSource method. 
 	# If you want to temporarily display a static text rather than the XPlane value, call setTextDataSource(None, None) first. You will need to call setTextDataSource() again to re enable the XPlane UDP value if required later on.
 	# @param s: The text string to be displayed
@@ -794,6 +796,8 @@ class TextField(Container):
 		self.image.needRefresh = True
 		
 	def setTextDataSource(self, textDataSourceReference, dataConvertFunction = False):
+		self.XPUDPServer = XPlaneUDPServer.pyXPUDPServer
+		
 		self.textDataSourceReference = textDataSourceReference
 		self.dataConvertFunction = dataConvertFunction
 	
@@ -806,7 +810,7 @@ class TextField(Container):
 	
 	def draw(self):
 		if self.visible == True:
-			
+			super(TextField,self).draw()
 			XPValue = 0
 			if self.XPUDPServer != None:
 				XPValue = self.XPUDPServer.getData(self.textDataSourceReference)
@@ -818,6 +822,8 @@ class TextField(Container):
 
 			#logging.debug("drawing text %s, at x: %s, y %s ", self.text, self.x, self.y )
 			self.image.draw(self.text,self.x,self.y)
+			
+			
 
 
 

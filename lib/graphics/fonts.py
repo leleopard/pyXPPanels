@@ -9,6 +9,7 @@ FONT_SIZE_VSMALL 	= 11
 FONT_SIZE_13PT	 	= 13
 FONT_SIZE_14PT		= 14
 FONT_SIZE_15PT 		= 15
+FONT_SIZE_20PT		= 20
 FONT_SIZE_LARGE 	= 17
 FONT_SIZE_VLARGE 	= 20
 FONT_SIZE_XLARGE 	= 35
@@ -48,6 +49,7 @@ VERA_VSMALL_BOLD_ORANGE = None
 VERA_13PT_BOLD_ORANGE = None
 VERA_15PT_BOLD_ORANGE = None
 VERA_14PT_BOLD_ORANGE = None
+VERA_20PT_BOLD_ORANGE = None
 
 #def __init__(self,fontName,fontSize, fontColor = (255,255,255), antialias = True, fontKerning = 0):
 def initFonts():
@@ -83,6 +85,7 @@ def initFonts():
 	global VERA_14PT_BOLD_ORANGE
 	global VERA_13PT_BOLD_ORANGE
 	global VERA_15PT_BOLD_ORANGE
+	global VERA_20PT_BOLD_ORANGE 
 	
 
 	PROFONTWINDOWS_VSMALL_WHITE = 		OpenGL3lib.GL_Font(ProFontWindows, FONT_SIZE_VSMALL, TXT_COLOR_WHITE, antialias, fontKerning)
@@ -111,4 +114,4 @@ def initFonts():
 	VERA_13PT_BOLD_ORANGE = 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_13PT, TXT_COLOR_ORANGE, antialias, 0)
 	VERA_14PT_BOLD_ORANGE = 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_14PT, TXT_COLOR_ORANGE, antialias, 0)
 	VERA_15PT_BOLD_ORANGE = 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_15PT, TXT_COLOR_ORANGE, antialias, 0)
-	
+	VERA_20PT_BOLD_ORANGE = 			OpenGL3lib.GL_Font(VeraB, FONT_SIZE_20PT, TXT_COLOR_ORANGE, antialias, 0)
