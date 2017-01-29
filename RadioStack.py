@@ -60,17 +60,17 @@ from instruments import BendixKing_XPDR_KT70
 XPlaneDataServer = RadioStack_Panel.XPlaneDataServer
 batchImageRenderer = OpenGL3lib.GL_BatchImageRenderer(10) # create a batch renderer with 10 layers
 
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(310, "sim/cockpit2/radios/actuators/com1_power[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(311, "sim/cockpit2/radios/actuators/com2_power[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(312, "sim/cockpit2/radios/actuators/dme_power[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(313, "sim/cockpit/radios/adf1_stdby_freq_hz[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(314, "sim/cockpit2/radios/actuators/adf1_power[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(315, "sim/time/total_flight_time_sec[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(316, "sim/cockpit2/clock_timer/elapsed_time_minutes[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(317, "sim/cockpit2/clock_timer/elapsed_time_seconds[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(318, "sim/cockpit2/radios/actuators/transponder_code[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(319, "sim/cockpit2/radios/actuators/transponder_mode[0]")
-XPlaneUDPServer.pyXPUDPServer.requestXPDref(320, "sim/cockpit/radios/transponder_light[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(310, "sim/cockpit2/radios/actuators/com1_power[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(311, "sim/cockpit2/radios/actuators/com2_power[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(312, "sim/cockpit2/radios/actuators/dme_power[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(313, "sim/cockpit/radios/adf1_stdby_freq_hz[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(314, "sim/cockpit2/radios/actuators/adf1_power[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(315, "sim/time/total_flight_time_sec[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(316, "sim/cockpit2/clock_timer/elapsed_time_minutes[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(317, "sim/cockpit2/clock_timer/elapsed_time_seconds[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(318, "sim/cockpit2/radios/actuators/transponder_code[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(319, "sim/cockpit2/radios/actuators/transponder_mode[0]")
+#XPlaneUDPServer.pyXPUDPServer.requestXPDref(320, "sim/cockpit/radios/transponder_light[0]")
 
 
 NAVCOMM_BK165_1 	= BendixKing_NAVCOMM_KX165A.BK_NAVCOMM_KX165A 	(NAVCOMM_BK165_1_POS, 	ALT_SIZE, batchImageRenderer, RadioStackTexture, 1 )

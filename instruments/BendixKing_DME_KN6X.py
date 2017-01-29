@@ -64,10 +64,10 @@ class BK_DME_KN6X(graphics.Container):
 		self.addItem(self.DME_NAV2_Indicator, (x_DME_txt+135,y_frequencies+20), False)
 		
 	def draw(self):
-		powered = XPlaneUDPServer.pyXPUDPServer.getData(312,0)
+		powered = XPlaneUDPServer.pyXPUDPServer.getData("sim/cockpit2/radios/actuators/dme_power[0]")
 		if powered ==1.0 :
 			self.setVisible(True)
-			DME_found = XPlaneUDPServer.pyXPUDPServer.getData(102,2)
+			DME_found = XPlaneUDPServer.pyXPUDPServer.getData((102,2))
 			if DME_found == 0.0:
 				self.DME_DIST_Text.setVisible(False)
 				self.DME_SPEED_Text.setVisible(False)
@@ -77,7 +77,7 @@ class BK_DME_KN6X(graphics.Container):
 				self.DME_SPEED_Text.setVisible(True)
 				self.DME_TIME_Text.setVisible(True)
 			
-			ACT_DME = XPlaneUDPServer.pyXPUDPServer.getData(102,0)
+			ACT_DME = XPlaneUDPServer.pyXPUDPServer.getData((102,0))
 			
 			if ACT_DME == 0.0:
 				self.DME_NAV1_Indicator.setVisible(True)

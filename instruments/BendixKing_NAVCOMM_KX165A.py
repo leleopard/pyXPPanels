@@ -77,9 +77,9 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 	def draw(self):
 		powered = 0.0
 		if self.NAV_COMM_ID == 1:
-			powered = XPlaneUDPServer.pyXPUDPServer.getData(310,0)
+			powered = XPlaneUDPServer.pyXPUDPServer.getData("sim/cockpit2/radios/actuators/com1_power[0]")
 		elif self.NAV_COMM_ID == 2:
-			powered = XPlaneUDPServer.pyXPUDPServer.getData(311,0)
+			powered = XPlaneUDPServer.pyXPUDPServer.getData("sim/cockpit2/radios/actuators/com2_power[0]")
 		
 		if powered == 1.0:
 			self.BK_NAVCOMM_KX165ABackground.setVisible(True)

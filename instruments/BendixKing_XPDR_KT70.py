@@ -46,7 +46,7 @@ class BK_XPDR_KT70(graphics.Container):
 		#-------------------------------------------------------------------------------------------------
 		self.XPDR_CODE_Text = graphics.TextField(fonts.DIGITAL_ITAL_XXLARGE_ORANGE)
 		self.XPDR_CODE_Text.setTextFormat('{:0>4.0f}')
-		self.XPDR_CODE_Text.setTextDataSource((318,0))
+		self.XPDR_CODE_Text.setTextDataSource("sim/cockpit2/radios/actuators/transponder_code[0]")
 		self.addItem(self.XPDR_CODE_Text, (x_xpdr_code,y_frequencies), False)
 		
 		#-------------------------------------------------------------------------------------------------
@@ -84,12 +84,12 @@ class BK_XPDR_KT70(graphics.Container):
 
 
 	def draw(self):
-		transp_mode = XPlaneUDPServer.pyXPUDPServer.getData(319,0) # Transponder mode (off=0,stdby=1,on=2,test=3) ALT=4, GND=5
-		transp_light = XPlaneUDPServer.pyXPUDPServer.getData(320,0) # 1.0 = light lit, 0.0 not
+		transp_mode = XPlaneUDPServer.pyXPUDPServer.getData("sim/cockpit2/radios/actuators/transponder_mode[0]") # Transponder mode (off=0,stdby=1,on=2,test=3) ALT=4, GND=5
+		transp_light = XPlaneUDPServer.pyXPUDPServer.getData("sim/cockpit/radios/transponder_light[0]") # 1.0 = light lit, 0.0 not
 		if transp_mode >= 1.0:
 			if transp_mode != 3.0 : # if we are not in test mode, reset the flight level and code text fields to follow XP values. 
 				self.XPDR_FL_Text.setTextDataSource((20,2), conversionFunctions.returnAltitude100sfeet)
-				self.XPDR_CODE_Text.setTextDataSource((318,0))
+				self.XPDR_CODE_Text.setTextDataSource("sim/cockpit2/radios/actuators/transponder_code[0]")
 			
 			if transp_mode == 1.0 : # Standby. 
 				self.XPDR_R_Indicator.setVisible(False)
@@ -120,11 +120,11 @@ class BK_XPDR_KT70(graphics.Container):
 				self.XPDR_R_Indicator.setVisible(True)
 				self.XPDR_BGD.setVisible(True)
 				self.XPDR_FL_Text.setVisible(True)
-				self.XPDR_FL_Text.setTextDataSource(None, None) # this is to avoid XPlane overriding the test value we will set on next line
+				self.XPDR_FL_Text.setTextDataSource(None) # this is to avoid XPlane overriding the test value we will set on next line
 				self.XPDR_FL_Text.setText('-888')
 				
 				self.XPDR_CODE_Text.setVisible(True)
-				self.XPDR_CODE_Text.setTextDataSource(None, None) # this is to avoid XPlane overriding the test value we will set on next line
+				self.XPDR_CODE_Text.setTextDataSource(None) # this is to avoid XPlane overriding the test value we will set on next line
 				self.XPDR_CODE_Text.setText('8888')
 				
 				self.XPDR_ALT_Indicator.setVisible(True)
