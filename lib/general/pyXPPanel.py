@@ -87,6 +87,8 @@ from lib.graphics import fonts
 class pyXPPanel():
 	width = 640
 	height = 480
+	window_xPos = 0
+	window_yPos = 0
 	fullscreen = False
 	bufferSwapInterval = 1
 	
@@ -139,6 +141,11 @@ class pyXPPanel():
 		self.monitorID = Config.getint("Graphics","MonitorID")
 		self.width = Config.getint("Graphics","ScreenWidth")
 		self.height = Config.getint("Graphics","ScreenHeight")
+		try:
+			self.window_xPos = Config.getint("Graphics","window_xPos")
+			self.window_yPos = Config.getint("Graphics","window_yPos")
+		except:
+			logging.info("no window position specified in config file, will assume 0,0")
 		self.bufferSwapInterval = Config.getint("Graphics","BufferSwapInterval")
 		self.bgdColor_R = Config.getfloat("Graphics","BgdColor_R")
 		self.bgdColor_G = Config.getfloat("Graphics","BgdColor_G")
@@ -195,7 +202,8 @@ class pyXPPanel():
 			self.window = glfw.glfwCreateWindow(self.width, self.height, str.encode("pyGaugesPanel"), monitors[monitor_id], None)
 		else:
 			self.window = glfw.glfwCreateWindow(self.width, self.height, str.encode("pyGaugesPanel"), None, None)
-		
+			glfw.glfwSetWindowPos(self.window, self.window_xPos, self.window_yPos)
+			
 		if not self.window:
 			logging.error("Could not create window, your version of OpenGL is not supported, exiting!")
 			glfw.glfwTerminate()
