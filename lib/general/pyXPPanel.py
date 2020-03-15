@@ -90,6 +90,7 @@ class pyXPPanel():
 	window_xPos = 0
 	window_yPos = 0
 	fullscreen = False
+	showWindowTitleBar = True;
 	bufferSwapInterval = 1
 	
 	IP = "127.0.0.1"		# specify the address of the PC you are running this on
@@ -146,6 +147,11 @@ class pyXPPanel():
 			self.window_yPos = Config.getint("Graphics","window_yPos")
 		except:
 			logging.info("no window position specified in config file, will assume 0,0")
+		try: 
+			self.showWindowTitleBar = Config.getboolean("Graphics", "showWindowTitleBar")
+		except:
+			logging.info("no config value for title bar, will set on by default")
+
 		self.bufferSwapInterval = Config.getint("Graphics","BufferSwapInterval")
 		self.bgdColor_R = Config.getfloat("Graphics","BgdColor_R")
 		self.bgdColor_G = Config.getfloat("Graphics","BgdColor_G")
@@ -183,7 +189,10 @@ class pyXPPanel():
 		glfw.glfwWindowHint(glfw.GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE);
 		glfw.glfwWindowHint(glfw.GLFW_OPENGL_PROFILE, glfw.GLFW_OPENGL_CORE_PROFILE)
 		glfw.glfwWindowHint(glfw.GLFW_AUTO_ICONIFY, gl.GL_FALSE)
-		
+		if self.showWindowTitleBar == False: 
+			glfw.glfwWindowHint(glfw.GLFW_DECORATED, gl.GL_FALSE)
+				
+
 		logging.info("testing monitor")
 		monitors = None
 		#print ( glfw.glfwGetMonitors())

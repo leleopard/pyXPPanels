@@ -17,7 +17,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-np.set_printoptions(threshold=np.nan)
+np.set_printoptions(threshold=sys.maxsize)
 
 COLOR_WHITE 	= (1.0,1.0,1.0,1.0)
 COLOR_PINK 		= (1.0,0,1.0,1.0)
