@@ -16,27 +16,15 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.NAV_COMM_ID = NAV_COMM_ID
+		if NAV_COMM_ID == 1 or NAV_COMM_ID == 2:
+			self.NAV_COMM_ID = NAV_COMM_ID
+		else:
+			self.NAV_COMM_ID = 1
 		
 		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_com"+str(NAV_COMM_ID)+"_on")
 		#self.XPlaneDataDispatcher.sendXPCmd("sim/radios/power_nav"+str(NAV_COMM_ID)+"_on")
 		self.layer = 1
 		
-		COMM_ACT_INDEX = 0
-		if NAV_COMM_ID == 2:
-			COMM_ACT_INDEX = 3
-		
-		COMM_STDBY_INDEX = 1
-		if NAV_COMM_ID == 2:
-			COMM_STDBY_INDEX = 4
-		
-		NAV_ACT_INDEX = 0
-		if NAV_COMM_ID == 2:
-			NAV_ACT_INDEX = 4
-		
-		NAV_STDBY_INDEX = 1
-		if NAV_COMM_ID == 2:
-			NAV_STDBY_INDEX = 5
 		
 		TXT_FMT_3DIG_PREC2 = '{:06.2f}'
 		TXT_FMT_3DIG_PREC3 = '{:07.3f}'
@@ -52,25 +40,25 @@ class BK_NAVCOMM_KX165A(graphics.Container):
 		# COMM frequency ACTIVE text
 		self.COMM_Frequ_ACT_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.COMM_Frequ_ACT_Text.setTextFormat(TXT_FMT_3DIG_PREC3)
-		self.COMM_Frequ_ACT_Text.setTextDataSource((96,COMM_ACT_INDEX),conversionFunctions.divideby100)
+		self.COMM_Frequ_ACT_Text.setTextDataSource("sim/cockpit/radios/com"+str(self.NAV_COMM_ID)+"_freq_hz[0]",conversionFunctions.divideby100)
 		self.addItem(self.COMM_Frequ_ACT_Text, (9,y_frequencies), False)
 		
 		# COMM frequency STANDBY text
 		self.COMM_Frequ_STBY_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.COMM_Frequ_STBY_Text.setTextFormat(TXT_FMT_3DIG_PREC3)
-		self.COMM_Frequ_STBY_Text.setTextDataSource((96,COMM_STDBY_INDEX),conversionFunctions.divideby100)
+		self.COMM_Frequ_STBY_Text.setTextDataSource("sim/cockpit/radios/com"+str(self.NAV_COMM_ID)+"_stdby_freq_hz[0]",conversionFunctions.divideby100)
 		self.addItem(self.COMM_Frequ_STBY_Text, (145,y_frequencies), False)
 		
 		# NAV frequency ACTIVE text
 		self.NAV_Frequ_ACT_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.NAV_Frequ_ACT_Text.setTextFormat(TXT_FMT_3DIG_PREC2)
-		self.NAV_Frequ_ACT_Text.setTextDataSource((97,NAV_ACT_INDEX),conversionFunctions.divideby100)
+		self.NAV_Frequ_ACT_Text.setTextDataSource("sim/cockpit/radios/nav"+str(self.NAV_COMM_ID)+"_freq_hz[0]",conversionFunctions.divideby100)
 		self.addItem(self.NAV_Frequ_ACT_Text, (288,y_frequencies), False)
 		
 		# NAV frequency STANDBY text
 		self.NAV_Frequ_STBY_Text = graphics.TextField(fonts.DIGITAL_ITAL_MED_ORANGE)
 		self.NAV_Frequ_STBY_Text.setTextFormat(TXT_FMT_3DIG_PREC2)
-		self.NAV_Frequ_STBY_Text.setTextDataSource((97,NAV_STDBY_INDEX),conversionFunctions.divideby100)
+		self.NAV_Frequ_STBY_Text.setTextDataSource("sim/cockpit/radios/nav"+str(self.NAV_COMM_ID)+"_stdby_freq_hz[0]",conversionFunctions.divideby100)
 		self.addItem(self.NAV_Frequ_STBY_Text, (408,y_frequencies), False)
 		
 		

@@ -226,7 +226,8 @@ class XPlaneUDPServer(threading.Thread):
 			nr_trailing_spaces = 504-len(dataref)
 			
 			msg = 'DREF0'+dataref
-			msg += ' '*nr_trailing_spaces
+			msg += '\0'
+			msg += ' '* (nr_trailing_spaces - 1)
 			if len(msg) == 509:
 				self.sendSock.sendto(msg.encode("latin_1"), self.XPAddress)
 		else:
@@ -347,7 +348,7 @@ class XPlaneUDPServer(threading.Thread):
 			self.XPbeacon['version_number']			= unpack('<i', packet[11:15])[0]
 			self.XPbeacon['role']					= unpack('<I', packet[15:19])[0]
 			self.XPbeacon['port']					= unpack('<H', packet[19:21])[0]
-			self.XPbeacon['computer_name']			= packet[21:len(packet)-1].decode('ascii')
+			self.XPbeacon['computer_name']			= packet[21:len(packet)-1].decode('ascii').rstrip('\x00r')
 			
 			#print (self.XPbeacon)
 			
