@@ -34,9 +34,9 @@ class C172_Altimeter(graphics.Container):
 
 		self.altimeterMbWheel.enableRotation ((7,0),[ [945,165.5],[1000,0.5],[1050,-149.5]],conversionFunctions.convertINtomb)
 		self.altimeterHgWheel.enableRotation ((7,0),[ [28,154],[29.5,-0.5],[31.1,-165.1]])
-		self.altimeter100sNeedle.enableRotation ((20,5),[ [0,0],[1.0,360]],conversionFunctions.return100s)
-		self.altimeter1kNeedle.enableRotation ((20,5),[ [0,0],[1.0,360]],conversionFunctions.return1000s)
-		self.altimeter10kNeedle.enableRotation ((20,5),[ [0,0],[1.0,360]],conversionFunctions.return10000s)
+		self.altimeter100sNeedle.enableRotation ("sim/cockpit2/gauges/indicators/altitude_ft_pilot",[ [0,0],[1.0,360]],conversionFunctions.return100s)
+		self.altimeter1kNeedle.enableRotation ("sim/cockpit2/gauges/indicators/altitude_ft_pilot",[ [0,0],[1.0,360]],conversionFunctions.return1000s)
+		self.altimeter10kNeedle.enableRotation ("sim/cockpit2/gauges/indicators/altitude_ft_pilot",[ [0,0],[1.0,360]],conversionFunctions.return10000s)
 
 		self.addItem(self.altimeterBlackBackground)
 		self.addItem(self.altimeterHgWheel)

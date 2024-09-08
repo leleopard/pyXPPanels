@@ -11,24 +11,23 @@ from lib.general import conversionFunctions
 
 
 class G1000Altimeter(graphics.Container):
-	XPlaneDataDispatcher = None
 	
-	def __init__(self,position, size, XPlaneDataDispatcher, batchImageRenderer, texture, jetVSI = False, name = "G1000Altimeter"):
+	def __init__(self,position, size, batchImageRenderer, texture, jetVSI = False, name = "G1000Altimeter"):
 		graphics.Container.__init__(self,position, size, name)
 		
 		self.testMode = False
-		self.XPlaneDataDispatcher = XPlaneDataDispatcher
 		self.jetVSI = jetVSI
 		self.maxVVI = 2000
 		self.layer = 1
+		self.XPUDPServer = XPlaneUDPServer.pyXPUDPServer
 		
 		#-------------------------------------------------------------------------------------------------
 		# Background 
 		#-------------------------------------------------------------------------------------------------
 		if self.jetVSI == False:
-			self.G1000AltimeterBackground = graphics.ImagePanel(texture, batchImageRenderer, self.layer,(0,0),[125,325],[643,2048-1699], "G1000AltimeterBackground")
+			self.G1000AltimeterBackground = graphics.ImagePanel(texture, batchImageRenderer, self.layer,(0,0),[125,325],[643,2048-1699])
 		else:
-			self.G1000AltimeterBackground = graphics.ImagePanel(texture, batchImageRenderer, self.layer,(0,0),[125,325],[512,2048-1699], "G1000AltimeterBackground")
+			self.G1000AltimeterBackground = graphics.ImagePanel(texture, batchImageRenderer, self.layer,(0,0),[125,325],[512,2048-1699])
 		self.maxVVI = 4000
 		
 		self.G1000AltimeterBackground.resize((125,325))
@@ -128,12 +127,12 @@ class G1000Altimeter(graphics.Container):
 		
 		self.Alti1kLabel = graphics.TextField(fonts.PROFONTWINDOWS_VLARGE_WHITE)
 		self.Alti1kLabel.setTextFormat('{: >2.0f}')
-		self.Alti1kLabel.setTextDataSource(self.XPlaneDataDispatcher,(20,5),conversionFunctions.returnAlti1k10kDigits)
+		self.Alti1kLabel.setTextDataSource((20,5),conversionFunctions.returnAlti1k10kDigits)
 		self.addItem(self.Alti1kLabel, (-50,-12), False)
 		
 		self.Alti10Label = graphics.TextField(fonts.PROFONTWINDOWS_LARGE_WHITE)
 		self.Alti10Label.setTextFormat('{: >1.0f}')
-		self.Alti10Label.setTextDataSource(self.XPlaneDataDispatcher,(20,5),conversionFunctions.returnAlti100sDigit)
+		self.Alti10Label.setTextDataSource((20,5),conversionFunctions.returnAlti100sDigit)
 		self.addItem(self.Alti10Label, (-20,-11), False)
 		
 		#def __init__(self, imagename, position=[0,0], cliprect=None, origin=None, testMode=False):
@@ -144,27 +143,26 @@ class G1000Altimeter(graphics.Container):
 		#self.Alti10sNrTape.enableTranslation (self.XPlaneDataDispatcher,(20,5),[ [0,0],[100,95]],conversionFunctions.returnAlti10s)
 		self.addItem(self.Alti10sNrTape, (6,0), False)	
 		
-		'''
-		self.altiSelectedAltitude = graphics.NumberTextField10kraised(G1000_fonts.FONT_LARGE_TURQUOISE,G1000_fonts.FONT_MED_TURQUOISE,fontSize10y_adjust)
-		self.addItem(self.altiSelectedAltitude, (21,302), False)
-		'''
 		
-	def returnAltiSelectDifference(self,selectedAltitude,XPlaneDataDispatcher):
-		altitude = self.XPlaneDataDispatcher.getData(20,5)
+		self.altiSelectedAltitude = graphics.TextField(fonts.PROFONTWINDOWS_LARGE_TURQUOISE)
+		self.addItem(self.altiSelectedAltitude, (21,302), False)
+		
+		
+	def returnAltiSelectDifference(self,selectedAltitude):
+		altitude = self.XPUDPServer.getData((20,5))
 		return (selectedAltitude - altitude)
 	
 	def setAltiBarTextGrads(self):
-		altitude = self.XPlaneDataDispatcher.getData(20,5)
+		altitude = self.XPUDPServer.getData((20,5))
 		#print "altitude: ", altitude
 		if self.testMode == True:
 			altitude = D(self.testValue)
 		
-		selectedAltitude = self.XPlaneDataDispatcher.getData(118,3)
-		self.altiSelectedAltitude.setNumber(selectedAltitude)
+		self.altiSelectedAltitude.setTextDataSource((118,3))
 		
 		altitude100 = D(altitude)//D(100)*100
 		#print '************ altitude100', altitude100
-		
+		'''
 		self.altiMarking0.setNumber(altitude100)
 		self.altiMarking_h1.setNumber(altitude100+100)
 		self.altiMarking_h2.setNumber(altitude100+200)
@@ -175,7 +173,7 @@ class G1000Altimeter(graphics.Container):
 		self.altiMarking_b3.setNumber(altitude100-300)
 		
 		#[ [0,0],[100,45]],conversionFunctions.returnAlti10s
-		y_translation = conversionFunctions.returnAlti10s(altitude,self.XPlaneDataDispatcher)*0.45
+		y_translation = conversionFunctions.returnAlti10s(altitude,self.XPUDPServer)*0.45
 		self.altiMarking0.y = self.altiMarking0.orig_y - y_translation
 		self.altiMarking_h1.y = self.altiMarking_h1.orig_y - y_translation
 		self.altiMarking_h2.y = self.altiMarking_h2.orig_y - y_translation
@@ -184,7 +182,7 @@ class G1000Altimeter(graphics.Container):
 		self.altiMarking_b1.y = self.altiMarking_b1.orig_y - y_translation
 		self.altiMarking_b2.y = self.altiMarking_b2.orig_y - y_translation
 		self.altiMarking_b3.y = self.altiMarking_b3.orig_y - y_translation
-		
+		'''
 	
 	def returnAltitude100sDigit(self, altitude):
 		#print "altitude passed to me: ", altitude
@@ -194,25 +192,27 @@ class G1000Altimeter(graphics.Container):
 		return returnValue
 	
 	def draw(self):
-		'''
+		
 		self.setAltiBarTextGrads()
 
-		VVI = self.XPlaneDataDispatcher.getData(4,2)
+		VVI = self.XPUDPServer.getData((4,2))
 		if self.testMode == True:
 			VVI = self.testValue
 			
 		#print "VVI:", VVI
+		'''
 		if abs(VVI)<100:
 			self.VSILabel.setVisible(False)
 		else:
-			self.VSILabel.setVisible(True)
+			#self.VSILabel.setVisible(True)
+		'''
 		y_translation = VVI*28*4/self.maxVVI
 		if VVI>self.maxVVI:
 			y_translation = self.maxVVI*28*4/self.maxVVI
 		if VVI<-self.maxVVI:
 			y_translation = -self.maxVVI*28*4/self.maxVVI
 			
-		self.VSILabel.y = self.VSILabel.orig_y + y_translation
-		'''
+		#self.VSILabel.y = self.VSILabel.orig_y + y_translation
+		
 		super(G1000Altimeter,self).draw()
 
