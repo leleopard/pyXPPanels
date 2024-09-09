@@ -1,6 +1,6 @@
-import sys, pygame, getopt
+import sys, getopt
 import math
-import ConfigParser
+#import ConfigParser
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -230,7 +230,7 @@ while running:
 		
 		clock.tick(150)
 		text = "FPS: {0:.2f}".format(clock.get_fps())
-		print testValue	
+		print (testValue)
 		#G1000Horizon.setTestValue(testValue)
 		#G1000PitchScale.setTestValue(testValue)
 		#G1000BankIndicator.setTestValue(testValue)
